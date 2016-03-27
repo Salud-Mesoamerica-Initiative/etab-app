@@ -1,0 +1,66 @@
+{% load bootstrap_pagination %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="../../assets/ico/favicon.ico">
+
+    <title>Quality Improvement Analytics</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{{ STATIC_URL }}/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link rel="stylesheet"
+          href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+    <!-- Custom styles for this template -->
+</head>
+
+<body>
+<div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+    <div class="container container-full">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                    data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/location/list/"> Quality Improvement Analytics</a>
+            <ul class="nav nav-pills pull-right">
+                <li class="active"><a href="/location/list/"><i class="fa fa-home"></i> Home</a>
+                </li>
+                {% if user.is_authenticated %}
+                    <li class="active"><a href="/user/logout">Log Out</a></li>{% endif %}
+            </ul>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+            </ul>
+        </div><!-- /.nav-collapse -->
+    </div><!-- /.container -->
+</div><!-- /.navbar -->
+
+<div class="container">
+    {% block page-content %}
+
+    {% endblock %}
+</div><!--/.container-->
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="{% url 'js_reverse' %}" type="text/javascript"></script>
+<script src="{{ STATIC_URL }}js/utils/csrf.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
+{% block javascripts %}{% endblock %}
+</body>
+</html>

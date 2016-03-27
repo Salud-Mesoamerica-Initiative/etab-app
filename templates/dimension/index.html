@@ -1,0 +1,12 @@
+{% extends "base/base.html" %}
+{% load static from staticfiles %}
+{% load utils_tags %}
+{% block page-content %}
+    <div id="app" class="container"></div>
+{% endblock %}
+{% block javascripts %}
+    <script>
+        window.__data = {{ js_data|to_json|safe }};
+    </script>
+    <script src="{% static "js/dimension/bundle.js" %}"></script>
+{% endblock %}

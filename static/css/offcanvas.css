@@ -1,0 +1,178 @@
+/*
+ * Style tweaks
+ * --------------------------------------------------
+ */
+html,
+body {
+  overflow-x: hidden; /* Prevent scroll on narrow devices */
+}
+body {
+  padding-top: 70px;
+}
+footer {
+  padding: 30px 0;
+}
+
+/*
+ * Off Canvas
+ * --------------------------------------------------
+ */
+@media screen and (max-width: 767px) {
+  .row-offcanvas {
+    position: relative;
+    -webkit-transition: all .25s ease-out;
+       -moz-transition: all .25s ease-out;
+            transition: all .25s ease-out;
+  }
+
+  .row-offcanvas-right {
+    right: 0;
+  }
+
+  .row-offcanvas-left {
+    left: 0;
+  }
+
+  .row-offcanvas-right
+  .sidebar-offcanvas {
+    right: -50%; /* 6 columns */
+  }
+
+  .row-offcanvas-left
+  .sidebar-offcanvas {
+    left: -50%; /* 6 columns */
+  }
+
+  .row-offcanvas-right.active {
+    right: 50%; /* 6 columns */
+  }
+
+  .row-offcanvas-left.active {
+    left: 50%; /* 6 columns */
+  }
+
+  .sidebar-offcanvas {
+    position: absolute;
+    top: 0;
+    width: 50%; /* 6 columns */
+  }
+}
+
+#map-canvas {
+        height: 400px;
+        margin: 0px;
+        padding: 0px
+      }
+
+   .overscroller{
+    min-width:250px; /* force table to be oversize */
+    overflow-x: scroll;
+
+}
+
+
+.container-full {
+  margin: 0 auto;
+  width: 100%;
+}
+
+
+table {
+    border-collapse: collapse;
+    margin-bottom: 3em;
+    width: 100%;
+
+}
+td, th {
+    padding: 0.75em 1.5em;
+    text-align: left;
+
+}
+  td.err {
+
+    font-size: 0.75em;
+    text-align: center;
+    line-height: 1;
+  }
+th {
+    
+    font-weight: bold;
+    width:129px;
+}
+tbody th {
+  
+}
+tbody tr:nth-child(2n-1) {
+    
+    transition: all .125s ease-in-out;
+}
+tbody tr:hover {
+    
+}
+
+/* For appearance */
+.sticky-wrap {
+  overflow-x: auto;
+  overflow-y: hidden;
+  position: relative;
+  margin: 3em 0;
+  width: 100%;
+}
+.sticky-wrap .sticky-thead,
+.sticky-wrap .sticky-col,
+.sticky-wrap .sticky-intersect {
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: all .125s ease-in-out;
+  z-index: 50;
+  width: auto; /* Prevent table from stretching to full size */
+}
+  .sticky-wrap .sticky-thead {
+    box-shadow: 0 0.25em 0.1em -0.1em rgba(0,0,0,.125);
+    z-index: 100;
+    width: 100%; /* Force stretch */
+  }
+  .sticky-wrap .sticky-intersect {
+    opacity: 1;
+    z-index: 150;
+
+  }
+    .sticky-wrap .sticky-intersect th {
+
+      color: #eee;
+    }
+.sticky-wrap td,
+.sticky-wrap th {
+  box-sizing: border-box;
+}
+
+.white{
+  background-color: #ffffff;
+}
+.jumbobg {
+  position: fixed;
+  width: 100%;
+  height: 185px; /*same height as jumbotron */
+  top:0;
+  left:0;
+  z-index: -1;
+}
+
+.cover{
+  background-size: cover;
+}
+
+.jumbotron h3{
+  color:white;
+  font-size: 1.5em;
+}
+
+.data-layer{
+    display: none;
+}
+
+.wide-map{
+    height:400px;
+}
