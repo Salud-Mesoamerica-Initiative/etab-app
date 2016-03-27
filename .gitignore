@@ -10,6 +10,7 @@ __pycache__/
 
 bower_components
 .DS_Store
+.idea
 
 db.sqlite3
 

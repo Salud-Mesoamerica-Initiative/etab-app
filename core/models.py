@@ -334,6 +334,11 @@ class Location(Auditable, Noun):
             loc_cache.set(key, series, None)
         return series
 
+    def save(self, **kwargs):
+        super(Location, self).save(**kwargs)
+        if self.dimension:
+            self.update_dimension_tags(self.dimension)
+
 
 class DimensionPath(models.Model):
     location = models.ForeignKey(Location)

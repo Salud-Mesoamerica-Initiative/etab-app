@@ -63,3 +63,4 @@ class Dimension(models.Model):
             self.set_data('path', path)
 
         super(Dimension, self).save(**kwargs)
+
