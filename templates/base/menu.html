@@ -1,9 +1,10 @@
 <div class="list-group">
-  {% if available_verbs %}
-  {% for verb in available_verbs %}
-  {% if verb.visible %}
-  <a href="{{ verb.url }}" class="list-group-item">{{ verb.display_name }}</a>
-  {% endif %}
-  {% endfor %}
-  {% endif %}
+    {% if available_verbs %}
+        {% for verb in available_verbs %}
+            {% if verb.visible %}
+                <a href="{{ verb.url }}" class="list-group-item">{{ verb.display_name }}</a>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    <a href="{% url "dimension:index" %}" class="list-group-item">View Dimensions</a>
 </div>

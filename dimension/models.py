@@ -14,7 +14,15 @@ class Dimension(models.Model):
         ordering = ('name', )
 
     def __unicode__(self):
-        return u'{}'.format(self.name)
+        path = self.get_path()
+        names = []
+        for dimension in path:
+            try:
+                names.append(Dimension.objects.get(id=dimension).name)
+            except Exception:
+                pass
+
+        return u'{}/{}'.format(u'/'.join(names), self.name)
 
     def change_parent(self, new_parent, update_fields=None):
         update_fields = update_fields or ['parent', 'data']
