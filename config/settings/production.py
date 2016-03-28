@@ -16,3 +16,5 @@ DATABASES = {
 }
 
 SECRET_KEY = 'u#3nd=(+sya#!nnrawhrvn!9e0lh(@y3&4^hci=0+sqf%kbtwh'
+
+ALLOWED_HOSTS = []
