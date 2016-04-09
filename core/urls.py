@@ -1,7 +1,6 @@
 from django.conf.urls import patterns, include, url
-from django.views.generic.base import RedirectView
-from . import views as cv
-from django.views.decorators.cache import cache_page
+
+import core.views as cv
 
 urlpatterns = patterns('',
     url(r'^$', cv.LandingView.as_view(), name="landing"),

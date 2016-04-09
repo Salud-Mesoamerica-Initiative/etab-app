@@ -28,7 +28,7 @@ def location_to_json(location):
     }
 
 
-class IndexView(TemplateView):
+class IndexView(braces.LoginRequiredMixin, TemplateView):
     template_name = 'dimension/index.html'
 
     def get_context_data(self, **kwargs):
@@ -51,7 +51,6 @@ class IndexView(TemplateView):
             }
         }
         return ctx
-
 
 class CreateAJAXView(braces.LoginRequiredMixin,
                      braces.JSONResponseMixin,

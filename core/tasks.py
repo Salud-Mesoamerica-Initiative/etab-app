@@ -1,9 +1,8 @@
 from __future__ import absolute_import
 
-from celery import shared_task
-from actstream import action
-from . import models as cm
 import time
+
+from celery import shared_task
 
 @shared_task
 def experimental(numbers):
@@ -17,12 +16,6 @@ def update_cache():
     time.sleep(30)
     return True
 
-# import boto
-# import logging
-# logging.basicConfig()
-# from boto.elastictranscoder.exceptions import (
-#     InternalServiceException,
-#     LimitExceededException,
-#     ResourceInUseException,
-# )
-# from django.conf import settings
+
+import logging
+logging.basicConfig()

@@ -1,5 +1,5 @@
+from carteblanche.base import Noun, Conditions
 from carteblanche.mixins import DjangoVerb, availability_login_required
-from carteblanche.base import Verb, Noun, Conditions
 from django.core.urlresolvers import reverse
 
 APPNAME = 'core'

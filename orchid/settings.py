@@ -46,6 +46,10 @@ INSTALLED_APPS = (
     'forms_builder.forms',
     'geoposition',
     'bootstrap_pagination',
+    'dimension',
+    'utils',
+    'django_js_reverse',
+    'debug_toolbar'
     #'debug_toolbar',
 )
 
@@ -143,11 +147,11 @@ DATABASES = {
 DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': os.environ.get('ORCHID_DATABASE_NAME'),
-            'USER': os.environ.get('ORCHID_DATABASE_USER'),
-            'PASSWORD': os.environ.get('ORCHID_DATABASE_PASSWORD'),
+            'NAME': 'orchid',
+            'USER': 'postgres',
+            'PASSWORD': 'r4ss1n1gg',
             #prod
-            'HOST': os.environ.get('ORCHID_DATABASE_HOST'),
+            'HOST': 'localhost',
             #'HOST': 'mohtestdb.cqvqhvonzmwu.us-west-2.rds.amazonaws.com',
             'PORT': '5432',
         }

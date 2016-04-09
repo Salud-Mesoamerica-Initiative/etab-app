@@ -1,5 +1,8 @@
-from forms_builder.forms.forms import FormForForm
+from django.forms import forms
 from django.template.context import Context
+from django_remote_forms.forms import RemoteForm
+from forms_builder.forms.forms import FormForForm
+
 
 def serialize_BuilderForm(builder_form):
     c = Context()
