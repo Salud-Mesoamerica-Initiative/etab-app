@@ -52,6 +52,7 @@ class IndexView(braces.LoginRequiredMixin, TemplateView):
         }
         return ctx
 
+
 class CreateAJAXView(braces.LoginRequiredMixin,
                      braces.JSONResponseMixin,
                      AJAXRequiredMixin,

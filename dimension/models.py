@@ -16,10 +16,15 @@ class Dimension(models.Model):
     def __unicode__(self):
         path = self.get_path()
         names = []
-        for dimension in path:
+        dimension_qs = Dimension.objects.filter(id__in=path)
+        cache = {}
+        for dimension in dimension_qs:
+            cache[dimension.id] = dimension
+
+        for dimension_id in path:
             try:
-                names.append(Dimension.objects.get(id=dimension).name)
-            except Exception:
+                names.append(cache[dimension_id].name)
+            except KeyError:
                 pass
 
         return u'{}/{}'.format(u'/'.join(names), self.name)
