@@ -558,6 +558,12 @@ class EntriesFilterView(SiteRootView, FormView):
                                       context,
                                       context_instance=RequestContext(self.request))
 
+    def get_form_kwargs(self):
+        kwargs = super(EntriesFilterView, self).get_form_kwargs()
+        kwargs['ajax_location'] = True
+        return kwargs
+
+
 
 class ScoresDetailView(SiteRootView, FormView):
     template_name = 'overview/scores.html'

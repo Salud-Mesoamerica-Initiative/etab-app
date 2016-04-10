@@ -30,6 +30,11 @@ urlpatterns = patterns(
         name='children-list-ajax'
     ),
     url(
+        r'^(?P<dimension_id>\d+)/retrieve/locations/$',
+        view=views.ChildrenLocationListAJAXView.as_view(),
+        name='location-list-ajax'
+    ),
+    url(
         r'^move/location/$',
         view=views.MoveLocationAJAXView.as_view(),
         name='move-location-ajax'

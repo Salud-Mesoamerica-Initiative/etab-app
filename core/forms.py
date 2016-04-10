@@ -7,6 +7,7 @@ from dimension.models import Dimension
 
 
 # do weird stuff to mAake user names nou usernames show up
+from utils.utils import retrieve_leaf_dimensions
 
 
 def user_new_unicode(self):
@@ -215,12 +216,8 @@ class LocationForm(ModelBootstrapForm):
 
     def __init__(self, *args, **kwargs):
         super(LocationForm, self).__init__(*args, **kwargs)
-        query = ('SELECT n.id FROM dimension_dimension n WHERE NOT EXISTS '
-                 '(SELECT parent_id FROM dimension_dimension r WHERE r.parent_id = n.id)')
-        ids = []
-        for q in Dimension.objects.raw(query):
-            ids.append(q.id)
-        self.fields['dimension'].queryset = Dimension.objects.filter(id__in=ids)
+        self.fields['dimension'].queryset = retrieve_leaf_dimensions()
+        self.fields['title'].widget.attrs.update({'rows': 3})
 
 
 class IndicatorForm(ModelBootstrapForm):
@@ -278,6 +275,7 @@ class JSONUploadForm(forms.Form):
 class SavedFilterForm(BootstrapForm):
     indicator = forms.ModelChoiceField(queryset=cm.Indicator.objects.all().order_by("form_number"),
                                        required=False)
+    dimension = forms.ModelChoiceField(queryset=retrieve_leaf_dimensions(), required=False)
     locations = forms.ModelMultipleChoiceField(queryset=cm.Location.objects.all(), required=False,
                                                widget=forms.SelectMultiple(
                                                    attrs={'class': 'chosen-select'}))
@@ -292,6 +290,22 @@ class SavedFilterForm(BootstrapForm):
                                             help_text="Fields that have been removed from the form by an administrator will be seen anyway.")
     export = forms.BooleanField(required=False,
                                 help_text="Export this data as an excel spreadsheet.")
+
+    def __init__(self, *args, **kwargs):
+        ajax_location = kwargs.pop('ajax_location', None)
+        super(SavedFilterForm, self).__init__(*args, **kwargs)
+        data = kwargs.get('data', {})
+
+        # performing optimization when locations are loaded by ajax according to a dimension
+        try:
+            if ajax_location:
+                if 'dimension' in data:
+                    qs = cm.Location.objects.filter(dimension=int(data['dimension']))
+                else:
+                    qs = cm.Location.objects.none()
+                self.fields['locations'].queryset = qs
+        except ValueError:
+            pass
 
     def clean(self):
         cleaned_data = super(SavedFilterForm, self).clean()
@@ -319,7 +333,6 @@ def get_user_form_class(user):
             initial = kwargs.get('initial', {})
             initial.update({'locations': user.location_set.all()})
             kwargs['initial'] = initial
-
             super(UserForm, self).__init__(*args, **kwargs)
 
         class Meta:

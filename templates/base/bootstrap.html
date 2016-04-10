@@ -58,7 +58,8 @@
       <ul class="nav nav-pills pull-right">
         <li class="active"><a href="/location/list/"><i class="fa fa-home"></i> Home</a></li>
         {% if user.is_authenticated %}
-          <li class="active"><a href="/user/logout">Log Out</a></li>{% endif %}
+          <li class="active"><a href="/user/logout">Log Out</a></li>
+        {% endif %}
       </ul>
     </div>
     <div class="collapse navbar-collapse">
@@ -92,7 +93,7 @@
         </div>
 
       </div>
-      <div class="">
+      <div class="showcase-container">
         {% block showcase %}{% endblock %}
         {% block stream %}
           {% if stream %}
@@ -149,16 +150,18 @@
 <script src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
 <!-- select2 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2/js/select2.min.js"></script>
+<script src="{% url 'js_reverse' %}" type="text/javascript"></script>
 <script src="{% static "js/base/common.js" %}"></script>
+<script src="{% static "js/libs/jquery.cascadingdropdown.min.js" %}"></script>
 
-<script src="{{ STATIC_URL }}bower_components/jquery-ui/jquery-ui.js"></script>
-<script src="{{ STATIC_URL }}bower_components/chosen-bower/chosen.jquery.min.js"></script>
-<script src="http://highlightjs.org/static/highlight.pack.js"></script>
-<script
-    src="http://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js"></script>
-<script src="{{ STATIC_URL }}js/jquery.stickyheader.js"></script>
-<script src="{{ STATIC_URL }}js/demoad.js"></script>
-<script src="{{ STATIC_URL }}js/offcanvas.js"></script>
+{#<script src="{{ STATIC_URL }}bower_components/jquery-ui/jquery-ui.js"></script>#}
+{#<script src="{{ STATIC_URL }}bower_components/chosen-bower/chosen.jquery.min.js"></script>#}
+{#<script src="http://highlightjs.org/static/highlight.pack.js"></script>#}
+{#<script#}
+{#    src="http://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js"></script>#}
+{#<script src="{{ STATIC_URL }}js/jquery.stickyheader.js"></script>#}
+{#<script src="{{ STATIC_URL }}js/demoad.js"></script>#}
+{#<script src="{{ STATIC_URL }}js/offcanvas.js"></script>#}
 {% block javascripts %}{% endblock %}
 </body>
 </html>

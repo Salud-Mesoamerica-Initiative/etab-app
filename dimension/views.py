@@ -161,6 +161,35 @@ class ChildrenListAJAXView(braces.LoginRequiredMixin,
         return self.render_json_response(ctx)
 
 
+class ChildrenLocationListAJAXView(braces.LoginRequiredMixin,
+                                   braces.JSONResponseMixin,
+                                   AJAXRequiredMixin,
+                                   View):
+    http_method_names = ['get']
+    DIRECT = 'direct'
+
+    def get(self, request, *args, **kwargs):
+        dimension_id = self.kwargs['dimension_id']
+        params = self.request.GET
+        filters = {}
+        if params.get('kind', '') == self.DIRECT:
+            filters['dimension'] = dimension_id
+        else:
+            filters['dimensionpath__dimension'] = dimension_id
+        locations_qs = Location.objects.select_related('dimension') \
+            .filter(**filters) \
+            .order_by('title')
+
+        ctx = {
+            'items': []
+        }
+
+        for location in locations_qs:
+            ctx['items'].append(location_to_json(location))
+
+        return self.render_json_response(ctx)
+
+
 class MoveLocationAJAXView(braces.LoginRequiredMixin,
                            braces.JSONResponseMixin,
                            AJAXRequiredMixin,

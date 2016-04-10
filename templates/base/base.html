@@ -36,7 +36,9 @@
                 <li class="active"><a href="/location/list/"><i class="fa fa-home"></i> Home</a>
                 </li>
                 {% if user.is_authenticated %}
-                    <li class="active"><a href="/user/logout">Log Out</a></li>{% endif %}
+                    <li class="active"><a href="/user/logout">Log Out</a></li>
+                  <li class="active"><a href="#">{{ user.username }}</a></li>
+                {% endif %}
             </ul>
         </div>
         <div class="collapse navbar-collapse">
