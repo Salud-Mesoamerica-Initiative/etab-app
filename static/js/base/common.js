@@ -7,7 +7,7 @@ $(document).ready(function () {
 
 
 function cascadingDropdown() {
-  var $locations = $('#id_locations');
+  var $locations = $('#id_locations.cascade');
   // required to handle the plugin correctly, do not comment this.
   var selectedLocations = $locations.val() || [];
   $locations.find('option').remove();
@@ -16,12 +16,12 @@ function cascadingDropdown() {
   var options = {
     selectBoxes: [
       {
-        selector: '#id_dimension',
+        selector: '#id_dimension.cascade',
         paramName: 'dimension'
       },
       {
-        selector: '#id_locations',
-        requires: ['#id_dimension'],
+        selector: '#id_locations.cascade',
+        requires: ['#id_dimension.cascade'],
         source: function (request, response) {
           var url = Urls['dimension:location-list-ajax'](request.dimension);
           $.getJSON(url, {kind: 'direct'}, function (result) {
