@@ -82,9 +82,7 @@ class RegistrationForm(ModelBootstrapForm):
     last_name = forms.CharField(max_length=100)
     password1 = forms.CharField(widget=forms.PasswordInput)
     password2 = forms.CharField(widget=forms.PasswordInput)
-    locations = forms.ModelMultipleChoiceField(queryset=cm.Location.objects.all(), required=False,
-                                               widget=forms.SelectMultiple(
-                                                   attrs={'class': 'chosen-select'}))
+    locations = forms.ModelMultipleChoiceField(queryset=cm.Location.objects.all(), required=False)
 
     # rest of the fields
 
@@ -204,11 +202,9 @@ class LoginForm(ModelBootstrapForm):
 
 class LocationForm(ModelBootstrapForm):
     members = forms.ModelMultipleChoiceField(
-        queryset=cm.User.objects.filter(is_active=True).order_by('first_name'), required=False,
-        widget=forms.SelectMultiple(attrs={'class': 'chosen-select'}))
+        queryset=cm.User.objects.filter(is_active=True).order_by('first_name'), required=False)
     indicators = forms.ModelMultipleChoiceField(
-        queryset=cm.Indicator.objects.all().order_by('form_number', 'title'), required=False,
-        widget=forms.SelectMultiple(attrs={'class': 'chosen-select'}))
+        queryset=cm.Indicator.objects.all().order_by('form_number', 'title'), required=False)
 
     class Meta:
         model = cm.Location
@@ -276,16 +272,13 @@ class SavedFilterForm(BootstrapForm):
     indicator = forms.ModelChoiceField(queryset=cm.Indicator.objects.all().order_by("form_number"),
                                        required=False)
     dimension = forms.ModelChoiceField(queryset=retrieve_leaf_dimensions(), required=False)
-    locations = forms.ModelMultipleChoiceField(queryset=cm.Location.objects.all(), required=False,
-                                               widget=forms.SelectMultiple(
-                                                   attrs={'class': 'chosen-select'}))
+    locations = forms.ModelMultipleChoiceField(queryset=cm.Location.objects.all(), required=False)
     start_date = forms.DateField(required=False,
                                  widget=forms.DateInput(attrs={'class': 'datepicker'}))
     end_date = forms.DateField(required=False,
                                widget=forms.DateInput(attrs={'class': 'datepicker'}))
     input_user = forms.ModelMultipleChoiceField(queryset=cm.User.objects.filter(is_active=True),
-                                                required=False, widget=forms.SelectMultiple(
-            attrs={'class': 'chosen-select'}))
+                                                required=False)
     show_hidden_fields = forms.BooleanField(required=False,
                                             help_text="Fields that have been removed from the form by an administrator will be seen anyway.")
     export = forms.BooleanField(required=False,
@@ -332,8 +325,7 @@ class SavedFilterForm(BootstrapForm):
 def get_user_form_class(user):
     class UserForm(ModelBootstrapForm):
         locations = forms.ModelMultipleChoiceField(queryset=cm.Location.objects.all(),
-                                                   required=False, widget=forms.SelectMultiple(
-                attrs={'class': 'chosen-select'}))
+                                                   required=False)
 
         def __init__(self, *args, **kwargs):
             initial = kwargs.get('initial', {})
