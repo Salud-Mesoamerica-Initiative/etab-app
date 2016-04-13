@@ -307,6 +307,12 @@ class SavedFilterForm(BootstrapForm):
         except ValueError:
             pass
 
+        cascade_fields = ['dimension', 'locations']
+        for field in cascade_fields:
+            current_class = self.fields[field].widget.attrs.get('class', '')
+            new_class = ' '.join([current_class, 'cascade'])
+            self.fields[field].widget.attrs.update({'class': new_class})
+
     def clean(self):
         cleaned_data = super(SavedFilterForm, self).clean()
         indicator = cleaned_data.get("indicator")

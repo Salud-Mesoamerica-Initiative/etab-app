@@ -1,21 +1,53 @@
 {% extends "base/bootstrap.html" %}
-{% block scripts %}
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
-<script src="{{ STATIC_URL }}js/gmaps.js"></script>
-<script src="{{ STATIC_URL }}js/maps.js"></script>
+{% load static from staticfiles %}
+{% load utils_tags %}
+{% block css %}
+  <link rel="stylesheet" href={% static "js/libs/jstree/themes/default/style.min.css" %}>
 {% endblock %}
+
+{% block scripts %}
+  <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+  <script src="{{ STATIC_URL }}js/gmaps.js"></script>
+  <script src="{{ STATIC_URL }}js/maps.js"></script>
+{% endblock %}
+
+{% block javascripts %}
+  <script>
+    window.__data = {{ dimensions|to_json|safe }};
+  </script>
+  <script src="{% static "js/libs/jstree/jstree.min.js" %}"></script>
+  <script src="{% static "js/location_list/bundle.js" %}"></script>
+{% endblock %}
+
 {% block jumbotron %}
-<div class="data-layer">
+  <div class="data-layer">
     <ul>
-        {% for location in locations %}
-        <li class="location-data" data-id="{{ location.id }}"  data-latitude="{{ location.position.latitude }}" data-longitude="{{ location.position.longitude }}">{{ location.title }}</li>
-        {% endfor %}
+      {% for location in locations %}
+        <li class="location-data" data-id="{{ location.id }}"
+            data-latitude="{{ location.position.latitude }}"
+            data-longitude="{{ location.position.longitude }}">{{ location.title }}</li>
+      {% endfor %}
     </ul>
-</div>
-<div id="map" class="wide-map" id="map-canvas"></div>
+  </div>
+  <div id="map" class="wide-map" id="map-canvas"></div>
 {% endblock %}
 {% block showcase %}
-{% for l in locations %}
-<p><a href="/location/{{ l.id }}/detail">{{ l.title }}</a></p>
-{% endfor %}
+  {#  {% for l in locations %}#}
+  {#    <p><a href="/location/{{ l.id }}/detail">{{ l.title }}</a></p>#}
+  {#  {% endfor %}#}
+  <div id="wrapper" class="book with-summary">
+    <div class="tree-wrapper book-summary">
+      <div id="tree"></div>
+    </div>
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="page-wrapper">
+          <div class="page-inner">
+            <section class="normal" id="section-">
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}

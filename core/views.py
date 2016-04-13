@@ -334,19 +334,28 @@ class LocationListView(SiteRootView, TemplateView):
             context['locations'] = output
         else:
             context['locations'] = locations
+            dimensions_qs = cm.Dimension.objects.select_related('parent') \
+                .all().order_by('name')
+            # '#' stands for no parent(root) in jstree plugin
+            context['dimensions'] = map(lambda obj: dict(
+                id=obj.id,
+                parent=obj.parent.id if obj.parent else '#',
+                text=obj.name,
+                name=obj.name,   # alias
+                icon='no-icon'  # class for avoiding icon
+            ), dimensions_qs)
         context['stream'] = []
         # context['stream'] = am.Action.objects.all()[:40]
         return context
 
     def get(self, request, *args, **kwargs):
-        supes = super(LocationListView, self).get(request, *args, **kwargs)
-        context = self.get_context_data(**kwargs)
         if self.request.is_ajax():
+            context = self.get_context_data(**kwargs)
             data = json.dumps(context, default=decimal_default)
             out_kwargs = {'content_type': 'application/json'}
             return HttpResponse(data, **out_kwargs)
 
-        return supes
+        return super(LocationListView, self).get(request, *args, **kwargs)
 
 
 class PlainLocationListView(SiteRootView, TemplateView):
@@ -355,19 +364,24 @@ class PlainLocationListView(SiteRootView, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(PlainLocationListView, self).get_context_data(**kwargs)
-
+        dimension_id = self.request.GET.get('dimension', None)
         output = []
         if self.request.user.is_staff:
-            locations = cm.Location.objects.all().order_by('title')
+            locations = cm.Location.objects.all()
         else:
             locations = self.request.user.location_set.all()
+
+        if dimension_id:
+            locations = locations.filter(dimensionpath__dimension=dimension_id)
+
+        locations = locations.order_by('title')
 
         if self.request.is_ajax():
             for l in locations:
                 blob = {
                     'id': l.id,
-                    'lattitude': l.position.latitude,
-                    'longitude': l.position.longitude,
+                    'lattitude': l.position.latitude if l.position else '0',
+                    'longitude': l.position.longitude if l.position else '0',
                     'title': l.title,
                 }
                 output.append(blob)
@@ -379,14 +393,13 @@ class PlainLocationListView(SiteRootView, TemplateView):
         return context
 
     def get(self, request, *args, **kwargs):
-        supes = super(PlainLocationListView, self).get(request, *args, **kwargs)
-        context = self.get_context_data(**kwargs)
         if self.request.is_ajax():
+            context = self.get_context_data(**kwargs)
             data = json.dumps(context, default=decimal_default)
             out_kwargs = {'content_type': 'application/json'}
             return HttpResponse(data, **out_kwargs)
 
-        return supes
+        return super(PlainLocationListView, self).get(request, *args, **kwargs)
 
 
 class LocationListStreamView(SiteRootView, ListView):
@@ -562,7 +575,6 @@ class EntriesFilterView(SiteRootView, FormView):
         kwargs = super(EntriesFilterView, self).get_form_kwargs()
         kwargs['ajax_location'] = True
         return kwargs
-
 
 
 class ScoresDetailView(SiteRootView, FormView):
@@ -833,7 +845,7 @@ class IndicatorRecordCreateView(LocationView, TemplateView):
         # throw an error if this user is not authorized
         # TODO: find a way to do this with carteblanche
         if (self.request.user.is_staff != True) and (
-            self.noun.members.filter(id=self.request.user.id).count() == 0):
+                    self.noun.members.filter(id=self.request.user.id).count() == 0):
             raise Exception(
                 "You tried to create a record with a location you're not assigned to. You must be an Admin or a member of " + self.noun.title + " to create a new record.")
         indicator = get_object_or_404(cm.Indicator, id=kwargs["pk"])
@@ -903,7 +915,7 @@ class IndicatorRecordUploadView(LocationView, FormView):
             # throw an error if this user is not authorized
             # TODO: find a way to do this with carteblanche
             if (self.request.user.is_staff != True) and (
-                self.noun.members.filter(id=self.request.user.id).count() == 0):
+                        self.noun.members.filter(id=self.request.user.id).count() == 0):
                 raise Exception(
                     "You tried to synchronize a record with a location you're not assigned to. You must be an Admin or a member of " + self.noun.title + " to upload a new record.")
             json_string = form.cleaned_data['json']
@@ -1117,8 +1129,6 @@ class LocationVisualize(LocationView, TemplateView):
     template_name = "location/visualize.html"
 
     def get(self, request, *args, **kwargs):
-        supes = super(LocationVisualize, self).get(request, *args, **kwargs)
-        context = self.get_context_data(**kwargs)
         if self.request.is_ajax():
             # store these results in a new series
             # add the series to
@@ -1131,7 +1141,7 @@ class LocationVisualize(LocationView, TemplateView):
             out_kwargs = {'content_type': 'application/json'}
             return HttpResponse(data, **out_kwargs)
 
-        return supes
+        return super(LocationVisualize, self).get(request, *args, **kwargs)
 
 
 class LocationListVisualizeView(SiteRootView, TemplateView):
@@ -1146,15 +1156,11 @@ class LocationListVisualizeView(SiteRootView, TemplateView):
         return context
 
     def get(self, request, *args, **kwargs):
-        supes = super(LocationListVisualizeView, self).get(request, *args, **kwargs)
-        context = self.get_context_data(**kwargs)
-
-        all_series = []
-        # for every location, get all_series
-        for l in cm.Location.objects.filter(id=21).prefetch_related('indicators'):
-            all_series.append(l.get_all_series())
-
         if self.request.is_ajax():
+            all_series = []
+            # for every location, get all_series
+            for l in cm.Location.objects.filter(id=21).prefetch_related('indicators'):
+                all_series.append(l.get_all_series())
             # store these results in a new series
             # add the series to
             context = self.get_context_data(**kwargs)
@@ -1166,4 +1172,7 @@ class LocationListVisualizeView(SiteRootView, TemplateView):
             out_kwargs = {'content_type': 'application/json'}
             return HttpResponse(data, **out_kwargs)
 
-        return supes
+        dimension_qs = cm.Dimension.objects.all().order_by('name')
+        kwargs['dimensions'] = dimension_qs
+
+        return super(LocationListVisualizeView, self).get(request, *args, **kwargs)

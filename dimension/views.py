@@ -133,7 +133,8 @@ class ChildrenListAJAXView(braces.LoginRequiredMixin,
         parent_id = self.kwargs['dimension_id']
         dimension_qs = Dimension.objects.filter(parent=parent_id).order_by('name')
         locations_qs = Location.objects.select_related('dimension') \
-            .filter(dimensionpath__dimension=parent_id).order_by('title')
+            .filter(dimensionpath__dimension=parent_id, members=request.user) \
+            .order_by('title')
         ctx = {
             'locations': {
                 'items': []

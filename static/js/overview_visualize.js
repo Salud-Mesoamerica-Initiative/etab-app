@@ -24,7 +24,7 @@ orchid_vis = {
       },
       exporting: {
         sourceWidth: 1024,
-        sourceHeight: 786,
+        sourceHeight: 786
       },
       xAxis: {
         type: 'datetime',
@@ -65,7 +65,8 @@ orchid_vis = {
     }
     next_location_id = orchid_vis.locations[orchid_vis.location_cursor].id;
     //load the location's json
-    $.getJSON("location/" + String(next_location_id) + "/visualize", function (data) {
+    var url = "location/" + String(next_location_id) + "/visualize";
+    $.getJSON(url, function (data) {
       for (var q in data.series) {
         s = data.series[q];
         console.log(s);
@@ -75,7 +76,12 @@ orchid_vis = {
           newData = [];
           for (d in s.data) {
             this_data = s.data[d];
-            newData.push([new Date(this_data[0]).getTime(), parseInt(this_data[1]), this_data[2], this_data[3]]);
+            newData.push([
+              new Date(this_data[0]).getTime(),
+              parseInt(this_data[1]),
+              this_data[2],
+              this_data[3]
+            ]);
           }
           loading_chart.addSeries({
             name: data.noun.title,
@@ -83,7 +89,9 @@ orchid_vis = {
           });
         }
       }
-      $('#loaded_counter').html(String(orchid_vis.location_cursor + 1) + "/" + String(orchid_vis.locations.length) + " Loaded");
+      var txt = String(orchid_vis.location_cursor + 1) + "/" +
+        String(orchid_vis.locations.length) + " Loaded";
+      $('#loaded_counter').html(txt);
       orchid_vis.load_next_location();
     });
 
