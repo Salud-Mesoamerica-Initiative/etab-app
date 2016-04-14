@@ -286,6 +286,9 @@ class UserUpdateView(UserView, UpdateView):
                 l.members.add(user)
         return super(UserUpdateView, self).form_valid(form)
 
+    def get_success_url(self):
+        return reverse('user_list')
+
 
 class LocationCreateView(SiteRootView, CreateView):
     model = cm.Location
