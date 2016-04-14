@@ -6,9 +6,9 @@
 {% endblock %}
 {% block javascripts %}
   <script src="http://code.highcharts.com/highcharts.js"></script>
-{#  <script src="{% static "js/core/visualize.js" %}"></script>#}
   <script src="http://code.highcharts.com/modules/data.js"></script>
   <script src="http://code.highcharts.com/modules/exporting.js"></script>
+  {#  <script src="{% static "js/core/visualize.js" %}"></script>#}
 
   <!-- Additional files for the Highslide popup effect -->
   <script type="text/javascript"
@@ -19,23 +19,23 @@
 {% endblock %}
 {{ noun.title }}
 {% block showcase %}
-{#  <div class="row">#}
-{#    <div class="col-xs-6">#}
-{##}
-{#      <div class="form-group">#}
-{#        <label for="exampleInputEmail1">Dimension</label>#}
-{#        <select name="dimensions" id="dimensions" style="min-width: 100%">#}
-{#          <option value="-1">----------</option>#}
-{#          {% for dimension in dimensions %}#}
-{#            <option value="{{ dimension.id }}">{{ dimension.name }}</option>#}
-{#          {% endfor %}#}
-{##}
-{#        </select>#}
-{#      </div>#}
-{#    </div>#}
-{#  </div>#}
+  {#  <div class="row">#}
+  {#    <div class="col-xs-6">#}
+  {##}
+  {#      <div class="form-group">#}
+  {#        <label for="exampleInputEmail1">Dimension</label>#}
+  {#        <select name="dimensions" id="dimensions" style="min-width: 100%">#}
+  {#          <option value="-1">----------</option>#}
+  {#          {% for dimension in dimensions %}#}
+  {#            <option value="{{ dimension.id }}">{{ dimension.name }}</option>#}
+  {#          {% endfor %}#}
+  {##}
+  {#        </select>#}
+  {#      </div>#}
+  {#    </div>#}
+  {#  </div>#}
 
-{#  <div id="visualize-content" style="display: none">#}
+  {#  <div id="visualize-content" style="display: none">#}
   <div id="visualize-content">
     <h1 id="loaded_counter">0 / ??? Loaded</h1>
     <div id="container-p" class="panel row panel-default" style="min-width: 310px; height: 600px;">
