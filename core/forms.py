@@ -332,6 +332,9 @@ def get_user_form_class(user):
             initial.update({'locations': user.location_set.all()})
             kwargs['initial'] = initial
             super(UserForm, self).__init__(*args, **kwargs)
+            self.fields['first_name'].required = True
+            self.fields['last_name'].required = True
+            self.fields['email'].required = True
 
         class Meta:
             model = User
