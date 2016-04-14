@@ -21,13 +21,17 @@
 {% block showcase %}
   <div class="row">
     <div class="col-xs-6">
-      <select name="dimensions" id="dimensions" style="min-width: 100%">
-        <option value="-1">----------</option>
-        {% for dimension in dimensions %}
-          <option value="{{ dimension.id }}">{{ dimension.name }}</option>
-        {% endfor %}
 
-      </select>
+      <div class="form-group">
+        <label for="exampleInputEmail1">Dimension</label>
+        <select name="dimensions" id="dimensions" style="min-width: 100%">
+          <option value="-1">----------</option>
+          {% for dimension in dimensions %}
+            <option value="{{ dimension.id }}">{{ dimension.name }}</option>
+          {% endfor %}
+
+        </select>
+      </div>
     </div>
   </div>
 

@@ -29,6 +29,7 @@ orchid_vis = {
     } catch (e) {
       console.log(e);
     }
+    $el.hide();
     orchid_vis.apply_chart($el, [], $el.data("indicator-title"), true);
   },
   apply_chart: function (dom_object, series_data_blob, chart_title, legend_enabled) {
@@ -111,6 +112,7 @@ orchid_vis = {
               name: title,
               data: newData
             });
+            $("#container-" + s.id).show();
           }
         }
         var txt = String(orchid_vis.location_cursor + 1) + "/" +
