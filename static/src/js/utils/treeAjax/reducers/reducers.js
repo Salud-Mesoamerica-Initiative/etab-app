@@ -74,11 +74,11 @@ const updateChildren = (state = {}, action)=> {
 };
 
 
-const rootReducer = combineReducers({
+const reducers = {
   tree: loadChildren,
   childrenByNode,
   currentNode,
   children: updateChildren
-});
+};
 
-export default rootReducer
+export default reducers
