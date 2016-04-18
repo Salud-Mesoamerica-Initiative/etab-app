@@ -3,7 +3,6 @@
 import React from 'react';
 import ReactDom from 'react-dom';
 import {Modal, Button} from 'react-bootstrap';
-var tree = require('./tree');
 
 import Header from './components/Header.jsx';
 import LocationList from './components/LocationList.jsx';
@@ -29,7 +28,7 @@ class App extends React.Component {
     super(props);
     this.state = {
       activeNode: null,
-      tree: props.tree,
+      treeUI: props.treeUI,
       loaded: [0],
       modal: {
         show: false,
@@ -60,7 +59,7 @@ class App extends React.Component {
         <div className="page-sidebar">
           {
             <Tree
-              tree={this.state.tree}
+              tree={this.state.treeUI}
               activeNode={this.state.activeNode}
               dispatch={this.dispatch}
             />
@@ -101,7 +100,6 @@ class App extends React.Component {
   }
 
   _dispatch(state, action) {
-    console.log(action);
     switch (action.type) {
       case SHOW_MODAL:
         var modal = this.state.modal;
@@ -143,7 +141,7 @@ class App extends React.Component {
 
   _dispatchDimension(state, action) {
     let path;
-    let tree = state.tree;
+    let treeUI = state.treeUI;
     var refTree = null;
     var walk = (refTree, id) => {
       for (let i = 0; i < refTree.length; i++) {
@@ -155,11 +153,11 @@ class App extends React.Component {
     var getNode = (path) => {
       var _tree = null;
       if (!path.length) {
-        return tree;
+        return treeUI;
       }
       path.forEach((id, index)=> {
         if (index == 0) {
-          _tree = walk(tree.children, id);
+          _tree = walk(treeUI.children, id);
         } else {
           _tree = walk(_tree.children, id);
         }
@@ -174,7 +172,7 @@ class App extends React.Component {
         refTree = getNode(path);
         children = refTree.children;
       } else {
-        children = tree.children;
+        children = treeUI.children;
       }
       value.items.forEach((el)=> {
         let newObj = {
@@ -191,7 +189,7 @@ class App extends React.Component {
       let idToRemove = action.value._id;
       let f = (child) => child._id != idToRemove;
       // if (path.length == 1) {
-      //   tree.children = tree.children.filter(f);
+      //   treeUI.children = treeUI.children.filter(f);
       // } else {
       refTree = getNode(path);
       refTree.children = refTree.children.filter(f);
@@ -209,7 +207,7 @@ class App extends React.Component {
       refTree.children = refTree.children.map(f);
       state.activeNode.module = action.value.name;
     }
-    state.tree = tree;
+    state.treeUI = treeUI;
 
     return state;
   }
@@ -241,7 +239,7 @@ class App extends React.Component {
   _dispatchTree(state, action) {
     switch (action.type) {
       case CHANGE_TREE:
-        state.tree = action.value;
+        state.treeUI = action.value;
         break;
       case CLICK_DIMENSION:
         state.activeNode = action.value;
@@ -285,6 +283,6 @@ class App extends React.Component {
 }
 
 ReactDom.render(
-  <App tree={window.__data.tree}/>,
+  <App treeUI={window.__data.tree}/>,
   document.getElementById('app')
 );
