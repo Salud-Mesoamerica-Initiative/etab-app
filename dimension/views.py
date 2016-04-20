@@ -5,6 +5,7 @@ from braces import views as braces
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView, View, CreateView, UpdateView
+from django.forms import modelform_factory
 
 from core.models import Location
 from utils.views import AJAXRequiredMixin
@@ -74,11 +75,12 @@ class IndexView(braces.LoginRequiredMixin, TemplateView):
 
 class CreateUpdateMixin(object):
     http_method_names = ['post']
-    form_class = None
+    form_class = modelform_factory(Dimension, fields=('name', 'parent', 'code', 'dimension_tag'))
     
     def get_form_kwargs(self):
         kwargs = super(CreateAJAXView, self).get_form_kwargs()
-        kwargs['data'].update({'parent': self.data['parent_id']})
+        kwargs['data'].update({'parent': self.data.get('parent_id')]})
+        kwargs['data'].update({'dimension_tag': self.data.get('tag')})
         return kwargs
     
     def form_valid(self, form):
@@ -220,7 +222,7 @@ class MoveLocationAJAXView(braces.LoginRequiredMixin,
 
 class CreateUpdateDimensionTagMixin(object):
     http_method_names = ['post']
-    form_class = None
+    form_class = modelform_factory(DimensionTag, fields=('name', ))
     
     def form_valid(self, form):
         obj = form.save()
