@@ -1,26 +1,23 @@
 'use strict';
 
 import React from 'react';
+import {connect} from 'react-redux';
 import cx from "classnames";
-var Tree = require('../../lib/react-ui-tree/react-ui-dimension');
-import {CLICK_DIMENSION, CHANGE_TREE} from '../actionUI.jsx';
+import TreeUI from '../../lib/react-ui-tree/react-ui-dimension';
 
-class Tree1 extends React.Component {
+class Tree extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      active: null
-    };
   }
 
   render() {
     return (
       <div className="tree c-tree">
-        <Tree
+        <TreeUI
           paddingLeft={10}
           tree={this.props.tree}
-          onChange={this.handleChange.bind(this)}
-          onClickNode={this.onClickNode.bind(this)}
+          onChange={this.props.onTreeChange}
+          onClickNode={this.props.onClickNode}
           isNodeCollapsed={this.isNodeCollapsed}
           renderNode={this.renderNode.bind(this)}
         />
@@ -30,7 +27,7 @@ class Tree1 extends React.Component {
 
   renderNode(node) {
     let id = null;
-    if (this.props.activeNode){
+    if (this.props.activeNode) {
       id = this.props.activeNode._id;
     }
     return (
@@ -41,18 +38,6 @@ class Tree1 extends React.Component {
       </span>
     );
   }
-
-  onClickNode(node) {
-    this.setState({
-      active: node
-    });
-    this.props.dispatch(CLICK_DIMENSION, node);
-  }
-
-
-  handleChange(tree) {
-    this.props.dispatch(CHANGE_TREE, tree);
-  }
 }
 
-export default Tree1;
+export default Tree

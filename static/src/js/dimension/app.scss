@@ -89,7 +89,6 @@ $padding-header-from-actions: 20px;
       z-index: 4;
       background: #fff;
       width: $right-side-width;
-      border-bottom: 1px solid #eee;
       padding-top: $padding-header-from-nav;
 
       .first-line {
@@ -138,5 +137,11 @@ $padding-header-from-actions: 20px;
 @media (max-width: $left-side-width + $right-side-width + 10px) {
   .app .page-sidebar, .app .page-content .c-header {
     position: absolute;
+  }
+}
+
+.modal-content {
+  .table{
+    margin-bottom: 0;
   }
 }

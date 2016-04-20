@@ -8,7 +8,14 @@ from django.views.generic import TemplateView, View
 
 from core.models import Location
 from utils.views import AJAXRequiredMixin
-from .models import Dimension
+from .models import Dimension, DimensionTag
+
+
+def dimension_tag_to_json(dimension_tag):
+    return {
+        'id': dimension_tag.id,
+        'name': dimension_tag.name
+    }
 
 
 def dimension_to_json(dimension):
@@ -16,6 +23,8 @@ def dimension_to_json(dimension):
     return {
         '_id': dimension.id,
         'name': dimension.name,
+        'code': dimension.code,
+        'tag': dimension.dimension_tag,
         '_parentIds': path,
     }
 
@@ -40,15 +49,25 @@ class IndexView(braces.LoginRequiredMixin, TemplateView):
                 'collapsed': True,
                 'module': dimension.name,
                 '_id': dimension.id,
+                'code': dimension.code,
+                'tag': dimension.dimension_tag,
                 'children': [],
                 '_has_children': Dimension.objects.filter(parent=dimension).exists()
+            })
+
+        tags = []
+        for tag in DimensionTag.objects.all().order_by('name'):
+            tags.append({
+                'id': tag.id,
+                'name': tag.name
             })
         ctx['js_data'] = {
             'tree': {
                 '_id': 0,
                 'module': 'Locations',
                 'children': tree
-            }
+            },
+            'tags': tags
         }
         return ctx
 
@@ -63,6 +82,8 @@ class CreateAJAXView(braces.LoginRequiredMixin,
         data = self.data
         parent_id = data['parent_id']
         name = data['name']
+        code = data.get('code')
+        tag = data.get('tag')
         # TODO: validar que nombre no este vacio
 
         parent = None
@@ -72,11 +93,11 @@ class CreateAJAXView(braces.LoginRequiredMixin,
             except Dimension.DoesNotExist:
                 parent = None
 
-        dimension = Dimension.objects.create(name=name, parent=parent)
-        cx = {
-            'items': [dimension_to_json(dimension)]
-        }
-        cx['_parentIds'] = cx['items'][0]['_parentIds']
+        dimension = Dimension.objects.create(
+            name=name,
+            code=code,
+            parent=parent)
+        cx = dimension_to_json(dimension)
         return self.render_json_response(cx)
 
 
@@ -89,17 +110,13 @@ class UpdateAJAXView(braces.LoginRequiredMixin,
 
     def post(self, request, *args, **kwargs):
         obj = get_object_or_404(Dimension, pk=self.data['id'])
-        if self.data['type'] == self.UPDATE_TYPES['name']:
-            return self.render_json_response(self.update_name(obj))
-        elif self.data['type'] == self.UPDATE_TYPES['change_parent']:
-            return self.render_json_response(self.change_parent(obj))
+        return self.render_json_response(self.update(obj))
 
-        raise Http404
-
-    def update_name(self, obj):
-        # TODO: validar nombre
+    def update(self, obj):
+        # TODO: validar campos
         obj.name = self.data['name']
-        obj.save(update_fields=['name'])
+        obj.code = self.data['code']
+        obj.save(update_fields=['name', 'code'])
         return dimension_to_json(obj)
 
     def change_parent(self, obj):
@@ -148,6 +165,8 @@ class ChildrenListAJAXView(braces.LoginRequiredMixin,
             tree.append({
                 'collapsed': True,
                 'name': dimension.name,
+                'code': dimension.code,
+                'tag': dimension.dimension_tag,
                 '_id': dimension.id,
                 '_has_children': Dimension.objects.filter(parent=dimension).exists()
             })
@@ -198,7 +217,49 @@ class MoveLocationAJAXView(braces.LoginRequiredMixin,
     http_method_names = ['post']
 
     def post(self, request, *args, **kwargs):
-        location = get_object_or_404(Location=self.data['location_id'])
+        location = get_object_or_404(Location, pk=self.data['location_id'])
         new_dimension = get_object_or_404(Dimension, pk=self.data['new_parent_id'])
         location.change_dimension(new_dimension)
         return self.render_json_response(location_to_json(location))
+
+
+class CreateDimensionTagAJAXView(braces.LoginRequiredMixin,
+                                 braces.JSONResponseMixin,
+                                 AJAXRequiredMixin,
+                                 View):
+    http_method_names = ['post']
+
+    def post(self, request, *args, **kwargs):
+        data = self.data
+        name = data['name']
+        # TODO: validar que nombre no este vacio ni exista
+
+        obj = DimensionTag.objects.create(name=name)
+        return self.render_json_response(dimension_tag_to_json(obj))
+
+
+class UpdateDimensionTagAJAXView(braces.LoginRequiredMixin,
+                                 braces.JSONResponseMixin,
+                                 AJAXRequiredMixin,
+                                 View):
+    http_method_names = ['post']
+
+    def post(self, request, *args, **kwargs):
+        obj = get_object_or_404(DimensionTag, pk=self.data['id'])
+        obj.name = self.data['name']
+        obj.save(update_fields=['name'])
+
+        return self.render_json_response(dimension_tag_to_json(obj))
+
+
+class DeleteDimensionTagAJAXView(braces.LoginRequiredMixin,
+                     braces.JSONResponseMixin,
+                     AJAXRequiredMixin,
+                     View):
+    http_method_names = ['post']
+
+    def post(self, request, *args, **kwargs):
+        obj = get_object_or_404(DimensionTag, pk=self.data['id'])
+        data = dimension_tag_to_json(obj)
+        obj.delete()
+        return self.render_json_response(data)

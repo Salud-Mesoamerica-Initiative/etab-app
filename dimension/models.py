@@ -4,10 +4,19 @@ from django.db import models
 import jsonfield
 
 
+class DimensionTag(models.Model):
+    name = models.CharField(db_index=True, max_length=20)
+
+    def __unicode__(self):
+        return u'{}'.format(self.name)
+
+
 class Dimension(models.Model):
     name = models.CharField(u'Name', max_length=200)
     parent = models.ForeignKey('self', verbose_name='parent', null=True, blank=True,
                                related_name='+')
+    dimension_tag = models.ForeignKey(DimensionTag, null=True)
+    code = models.CharField(null=True, max_length=15)
     data = jsonfield.JSONField(default={})
 
     class Meta:
@@ -76,4 +85,3 @@ class Dimension(models.Model):
             self.set_data('path', path)
 
         super(Dimension, self).save(**kwargs)
-

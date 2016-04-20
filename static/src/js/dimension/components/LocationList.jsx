@@ -11,43 +11,51 @@ class LocationList extends React.Component {
   }
 
   render() {
-    let items = _.map(this.props.items, (item)=> {
-      return (
-        <Location
-          key={item.id}
-          {...item}
-        />
+    let dom;
+    if (this.props.items.length == 0) {
+      dom = <h5 className="text-center">No locations found</h5>;
+    } else {
+      let rows = _.map(this.props.items, (item)=> {
+        return (
+          <Location
+            key={item.id}
+            {...item}
+          />
+        );
+      });
+
+      dom = (
+        <table className="table">
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Dimension</th>
+          </tr>
+          </thead>
+          <tbody>
+          {rows}
+          </tbody>
+        </table>
       );
-    });
+    }
+
     return (
       <div className="c-location-list">
-        <ul className="location-list">{items}</ul>
+        {dom}
       </div>
     );
   }
 }
 
 
-class Location extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
-  render() {
-    return (
-      <li className="c-location">
-        <div className="location-wrapper">
-          <div className="prop name">
-            <span>{this.props.name}</span>
-          </div>
-          <div className="prop parent">
-            <span>{this.props.parent}</span>
-          </div>
-        </div>
-      </li>
-    );
-  }
-}
+const Location = ({id, name, parent}) => {
+  let url = Urls['location_detail'](id);
+  return (
+    <tr>
+      <td><a href={url}>{name}</a></td>
+      <td>{parent}</td>
+    </tr>
+  );
+};
 
 export default LocationList;

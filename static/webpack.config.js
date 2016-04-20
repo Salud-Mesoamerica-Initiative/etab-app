@@ -12,7 +12,7 @@ var APP_DIR = path.resolve(ROOT_SRC_DIR, 'js');
 
 process.env.BABEL_ENV = TARGET;
 
-var folder = 'location_list';
+var folder = 'dimension';
 
 var config = {
   entry: path.join(APP_DIR, folder),

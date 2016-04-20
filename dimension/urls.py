@@ -39,4 +39,19 @@ urlpatterns = patterns(
         view=views.MoveLocationAJAXView.as_view(),
         name='move-location-ajax'
     ),
+    url(
+        r'^tag/create/$',
+        view=views.CreateDimensionTagAJAXView.as_view(),
+        name='create-tag-ajax'
+    ),
+    url(
+        r'^tag/update/$',
+        view=views.UpdateDimensionTagAJAXView.as_view(),
+        name='update-tag-ajax'
+    ),
+    url(
+        r'^tag/delete/$',
+        view=views.DeleteDimensionTagAJAXView.as_view(),
+        name='delete-tag-ajax'
+    ),
 )

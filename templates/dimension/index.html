@@ -1,12 +1,24 @@
 {% extends "base/base.html" %}
 {% load static from staticfiles %}
 {% load utils_tags %}
+{% block css %}
+  <link rel="stylesheet" href={% static "js/libs/jstree/themes/default/style.min.css" %}>
+{% endblock %}
+
 {% block page-content %}
-    <div id="app" class="container"></div>
+  <div id="app" class="container">
+    <div class="page-sidebar">
+      <div id="tree"></div>
+    </div>
+    <div class="mask"></div>
+    <div class="page-content" id="app-content">
+    </div>
+  </div>
 {% endblock %}
 {% block javascripts %}
-    <script>
-        window.__data = {{ js_data|to_json|safe }};
-    </script>
-    <script src="{% static "js/dimension/bundle.js" %}"></script>
+  <script>
+    window.__data = {{ js_data|to_json|safe }};
+  </script>
+  <script src="{% static "js/libs/jstree/jstree.min.js" %}"></script>
+  <script src="{% static "js/dimension/bundle.js" %}"></script>
 {% endblock %}
