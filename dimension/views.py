@@ -4,7 +4,7 @@ import json
 from braces import views as braces
 from django.http import Http404
 from django.shortcuts import get_object_or_404
-from django.views.generic import TemplateView, View
+from django.views.generic import TemplateView, View, CreateView, UpdateView
 
 from core.models import Location
 from utils.views import AJAXRequiredMixin
@@ -70,54 +70,48 @@ class IndexView(braces.LoginRequiredMixin, TemplateView):
             'tags': tags
         }
         return ctx
+        
+
+class CreateUpdateMixin(object):
+    http_method_names = ['post']
+    
+    def get_form_kwargs(self):
+        kwargs = super(CreateAJAXView, self).get_form_kwargs()
+        kwargs['data'].update({'parent': self.data['parent_id']})
+        return kwargs
+    
+    def form_valid(self, form):
+        obj = form.save()
+        cx = {
+            'items': [dimension_to_json(obj)]
+        }
+        cx['_parentIds'] = cx['items'][0]['_parentIds']
+        return self.render_json_response(cx)
+        
+    def form_invalid(self, form):
+        cx = {
+            'errors': form.errors
+        }
+        return self.render_json_response(cx)
 
 
 class CreateAJAXView(braces.LoginRequiredMixin,
                      braces.JSONResponseMixin,
                      AJAXRequiredMixin,
-                     View):
-    http_method_names = ['post']
-
-    def post(self, request, *args, **kwargs):
-        data = self.data
-        parent_id = data['parent_id']
-        name = data['name']
-        code = data.get('code')
-        tag = data.get('tag')
-        # TODO: validar que nombre no este vacio
-
-        parent = None
-        if parent_id:
-            try:
-                parent = Dimension.objects.get(id=parent_id)
-            except Dimension.DoesNotExist:
-                parent = None
-
-        dimension = Dimension.objects.create(
-            name=name,
-            code=code,
-            parent=parent)
-        cx = dimension_to_json(dimension)
-        return self.render_json_response(cx)
+                     CreateUpdateMixin.
+                     CreateView):
+    pass
 
 
 class UpdateAJAXView(braces.LoginRequiredMixin,
                      braces.JSONResponseMixin,
                      AJAXRequiredMixin,
-                     View):
-    http_method_names = ['post']
-    UPDATE_TYPES = dict(name='NAME', change_parent='CHANGE_PARENT')
+                     CreateUpdateMixin
+                     UpdateView):
 
-    def post(self, request, *args, **kwargs):
+    def get_object(self):
         obj = get_object_or_404(Dimension, pk=self.data['id'])
-        return self.render_json_response(self.update(obj))
-
-    def update(self, obj):
-        # TODO: validar campos
-        obj.name = self.data['name']
-        obj.code = self.data['code']
-        obj.save(update_fields=['name', 'code'])
-        return dimension_to_json(obj)
+        return obj
 
     def change_parent(self, obj):
         parent = None
