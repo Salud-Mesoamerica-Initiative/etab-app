@@ -34,6 +34,7 @@ class Header extends React.Component {
           <div className="actions pull-right">
             <Toolbar
               dimension={this.props.currentDimension}
+              tags={this.props.tags}
               onAddDimension={this.props.onAddDimension}
               onUpdateDimension={this.props.onUpdateDimension}
               onRemoveDimension={this.props.onRemoveDimension}
@@ -62,10 +63,11 @@ class Header extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const {currentNode, tree, childrenByNode} = state;
+  const {currentNode, tree, childrenByNode, tags} = state;
   return {
     currentDimension: tree[currentNode] || tree[0],
-    childrenCount: (childrenByNode[currentNode] || []).length
+    childrenCount: (childrenByNode[currentNode] || []).length,
+    tags
   }
 };
 

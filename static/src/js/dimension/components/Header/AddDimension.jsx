@@ -74,6 +74,12 @@ class AddDimension extends React.Component {
   }
 
   renderModalBody() {
+    let tags = this.props.tags.map(tag => {
+      return <option key={tag.id} value={tag.id}>{tag.name}</option>
+    });
+    tags.unshift(
+      <option key="0" value="">----------</option>
+    );
     return (
       <Modal.Body>
         <div>
@@ -82,25 +88,22 @@ class AddDimension extends React.Component {
             value={this.state.name}
             label="Name"
             ref="name"
-            groupClassName="group-class"
-            labelClassName="label-class"
             onChange={(e) => this.onTextChange(e, 'name')}/>
           <Input
             type="text"
             value={this.state.code}
             label="Code"
             ref="code"
-            groupClassName="group-class"
-            labelClassName="label-class"
             onChange={(e) => this.onTextChange(e, 'code')}/>
           <Input
-            type="text"
+            type="select"
             value={this.state.tag}
             label="Tag"
             ref="tag"
-            groupClassName="group-class"
-            labelClassName="label-class"
-            onChange={(e) => this.onTextChange(e, 'tag')}/>
+            onChange={(e) => this.onTextChange(e, 'tag')}>
+            {tags}
+          </Input>
+
         </div>
       </Modal.Body>
     )
@@ -122,18 +125,18 @@ class AddDimension extends React.Component {
   }
 
   canSubmit() {
-    if (this.state.isProcessing){
+    if (this.state.isProcessing) {
       return false;
     }
 
-    if (this.attrs.validate){
+    if (this.attrs.validate) {
       return this.state.name.trim() != '';
     }
     return true;
   }
 
   onSubmit() {
-    const { id } = this.props.dimension;
+    const {id} = this.props.dimension;
     let params;
     let url = Urls['dimension:create-ajax']();
     let parentId = null;

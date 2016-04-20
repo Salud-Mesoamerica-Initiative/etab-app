@@ -31,7 +31,7 @@ const Tags = ({tags, onAddDimensionTag, onRemoveDimensionTag, onUpdateDimensionT
   return (
     <div className="c-tags">
       <div>
-        <AddTag onSuccess={onAddDimensionTag} />
+        <AddTag onSuccess={onAddDimensionTag}/>
       </div>
       <div className="table-content">
         <table className="table">

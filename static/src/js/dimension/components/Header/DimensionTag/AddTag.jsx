@@ -2,7 +2,7 @@
 
 import React from 'react';
 import AddDimension from '../AddDimension';
-import {Modal, Input} from 'react-bootstrap';
+import {Modal, Input, InputBase} from 'react-bootstrap';
 import cx from "classnames";
 
 

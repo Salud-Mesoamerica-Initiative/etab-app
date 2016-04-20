@@ -16,22 +16,24 @@ class Toolbar extends React.Component {
     let actions = [
       <AddDimension
         key={`add-dimension`}
+        tags={this.props.tags}
         onSuccess={this.props.onAddDimension}
         dimension={this.props.dimension}/>
     ];
 
-    if (this.props.dimension.id){
+    if (this.props.dimension.id) {
       actions.push(
         <UpdateDimension
-        key={`update-dimension`}
-        onSuccess={this.props.onUpdateDimension}
-        dimension={this.props.dimension}/>
+          key={`update-dimension`}
+          tags={this.props.tags}
+          onSuccess={this.props.onUpdateDimension}
+          dimension={this.props.dimension}/>
       );
       actions.push(
         <RemoveDimension
-        key={`remove-dimension`}
-        onSuccess={this.props.onRemoveDimension}
-        dimension={this.props.dimension}/>
+          key={`remove-dimension`}
+          onSuccess={this.props.onRemoveDimension}
+          dimension={this.props.dimension}/>
       );
     }
     actions.push(
