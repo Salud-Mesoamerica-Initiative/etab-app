@@ -74,6 +74,7 @@ class IndexView(braces.LoginRequiredMixin, TemplateView):
 
 class CreateUpdateMixin(object):
     http_method_names = ['post']
+    form_class = None
     
     def get_form_kwargs(self):
         kwargs = super(CreateAJAXView, self).get_form_kwargs()
@@ -106,7 +107,7 @@ class CreateAJAXView(braces.LoginRequiredMixin,
 class UpdateAJAXView(braces.LoginRequiredMixin,
                      braces.JSONResponseMixin,
                      AJAXRequiredMixin,
-                     CreateUpdateMixin
+                     CreateUpdateMixin,
                      UpdateView):
 
     def get_object(self):
@@ -217,33 +218,37 @@ class MoveLocationAJAXView(braces.LoginRequiredMixin,
         return self.render_json_response(location_to_json(location))
 
 
+class CreateUpdateDimensionTagMixin(object):
+    http_method_names = ['post']
+    form_class = None
+    
+    def form_valid(self, form):
+        obj = form.save()
+        return self.render_json_response(dimension_tag_to_json(obj))
+        
+    def form_invalid(self, form):
+        cx = {
+            'errors': form.errors
+        }
+        return self.render_json_response(cx)
+
+
 class CreateDimensionTagAJAXView(braces.LoginRequiredMixin,
                                  braces.JSONResponseMixin,
                                  AJAXRequiredMixin,
-                                 View):
-    http_method_names = ['post']
-
-    def post(self, request, *args, **kwargs):
-        data = self.data
-        name = data['name']
-        # TODO: validar que nombre no este vacio ni exista
-
-        obj = DimensionTag.objects.create(name=name)
-        return self.render_json_response(dimension_tag_to_json(obj))
+                                 CreateUpdateDimensionTagMixin,
+                                 CreateView):
+    pass
 
 
 class UpdateDimensionTagAJAXView(braces.LoginRequiredMixin,
                                  braces.JSONResponseMixin,
                                  AJAXRequiredMixin,
-                                 View):
-    http_method_names = ['post']
-
-    def post(self, request, *args, **kwargs):
+                                 CreateUpdateDimensionTagMixin,
+                                 UpdateView):
+    def get_object(self, request, *args, **kwargs):
         obj = get_object_or_404(DimensionTag, pk=self.data['id'])
-        obj.name = self.data['name']
-        obj.save(update_fields=['name'])
-
-        return self.render_json_response(dimension_tag_to_json(obj))
+        return obj
 
 
 class DeleteDimensionTagAJAXView(braces.LoginRequiredMixin,
