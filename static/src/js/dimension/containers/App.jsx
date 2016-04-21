@@ -28,7 +28,7 @@ class App extends React.Component {
         <div className="page-sidebar">
           {
             <Tree
-              tree={this.props.treeUI}
+              treeUI={this.props.treeUI}
               activeNode={this.props.activeNode}
               onClickNode={this.onClickNode}
               onTreeChange={this.onTreeChange}

@@ -43,7 +43,7 @@ const updateTreeUI = (state = {}, action)=> {
           collapsed: true,
           _has_children: el._has_children || false,
           children: [],
-          ..._.omit(el, ['type', '_id'])
+          ..._.omit(el, ['type', '_id', 'items'])
         };
         targetChildren.push(newObj);
       });
@@ -67,24 +67,17 @@ const updateDimension = (state = {}, action) => {
       let targetChildren;
       let path = action.parentIds;
       let treeUI = _.cloneDeep(state);
-      let children = [{
-        _id: action._id,
-        name: action.name
-      }];
       targetNode = _getNode(treeUI, path);
       targetChildren = targetNode.children;
-      children.forEach((el)=> {
-        let newObj = {
-          _id: el._id,
-          module: el.name,
-          collapsed: true,
-          _has_children: el._has_children || false,
-          children: [],
-          ..._.omit(el, ['type', '_id'])
-        };
-        targetChildren.push(newObj);
-      });
-
+      let newObj = _.omit(action, ['type', 'items', 'parentIds']);
+      newObj = {
+        ...newObj,
+        module: action.name,
+        collapsed: true,
+        _has_children: action._has_children || false,
+        children: []
+      };
+      targetChildren.push(newObj);
       return treeUI;
     case actions.UPDATE_DIMENSION:
       var treeUI = _.cloneDeep(state);

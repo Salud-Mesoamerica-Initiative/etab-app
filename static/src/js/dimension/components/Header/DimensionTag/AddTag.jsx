@@ -12,7 +12,8 @@ class CreateTag extends AddDimension {
     this.state = {
       showModal: false,
       isProcessing: false,
-      name: ''
+      name: '',
+      errors: {}
     };
 
     this.attrs = {
@@ -52,11 +53,12 @@ class CreateTag extends AddDimension {
         <div>
           <Input
             type="text"
+            bsStyle={this._validationState('name')}
+            help={this._helpText('name')}
+            name="name"
             value={this.state.name}
             label="Name"
             ref="name"
-            groupClassName="group-class"
-            labelClassName="label-class"
             onChange={(e) => this.onTextChange(e, 'name')}/>
         </div>
       </Modal.Body>
@@ -74,8 +76,7 @@ class CreateTag extends AddDimension {
       this.props.onSuccess(data);
       this._closeModal();
       this.setState({isProcessing: false});
-    });
-    console.log('Add Tag');
+    }).fail(this._onSubmitError);
   }
 }
 

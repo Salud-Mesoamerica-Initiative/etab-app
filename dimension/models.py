@@ -1,22 +1,24 @@
 # -*- coding: utf-8 -*-
+from django.core.validators import MinLengthValidator
 from django.db import models
 
 import jsonfield
 
 
 class DimensionTag(models.Model):
-    name = models.CharField(db_index=True, max_length=20)
+    name = models.CharField(db_index=True, max_length=20, validators=[MinLengthValidator(2)])
 
     def __unicode__(self):
         return u'{}'.format(self.name)
 
 
 class Dimension(models.Model):
-    name = models.CharField(u'Name', max_length=200)
+    name = models.CharField(u'Name', max_length=200, validators=[MinLengthValidator(2)])
     parent = models.ForeignKey('self', verbose_name='parent', null=True, blank=True,
                                related_name='+')
-    dimension_tag = models.ForeignKey(DimensionTag, null=True)
-    code = models.CharField(null=True, max_length=15)
+    dimension_tag = models.ForeignKey(DimensionTag, null=True, blank=True,
+                                      on_delete=models.SET_NULL)
+    code = models.CharField(null=True, max_length=15, blank=True)
     data = jsonfield.JSONField(default={})
 
     class Meta:

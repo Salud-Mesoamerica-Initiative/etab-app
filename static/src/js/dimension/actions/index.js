@@ -87,14 +87,16 @@ export function createDimension(attrs){
   return {
     type: ADD_DIMENSION,
     parentIds: attrs._parentIds,
-    ...attrs
+    ...attrs,
+    ...attrs.items[0]
   }
 }
 
 export function updateDimension(attrs){
   return {
     type: UPDATE_DIMENSION,
-    ...attrs
+    ...attrs,
+    ...attrs.items[0]
   }
 }
 

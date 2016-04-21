@@ -15,10 +15,9 @@ class Tree extends React.Component {
       <div className="tree c-tree">
         <TreeUI
           paddingLeft={10}
-          tree={this.props.tree}
+          tree={this.props.treeUI}
           onChange={this.props.onTreeChange}
           onClickNode={this.props.onClickNode}
-          isNodeCollapsed={this.isNodeCollapsed}
           renderNode={this.renderNode.bind(this)}
         />
       </div>

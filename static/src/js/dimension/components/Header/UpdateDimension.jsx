@@ -16,23 +16,23 @@ class UpdateDimension extends AddDimension {
     };
   }
 
-  componentDidMount() {
-    const {name, code, tag} = this.props.dimension;
+
+  setTagAttrs(props) {
+    const {name, code, dimension_tag} = this.props.dimension;
     this.setState({
       name: name,
       code: code,
-      tag: tag
+      dimension_tag: dimension_tag
     });
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (!this.state.showModal) {
-      const {name, code, tag} = nextProps.dimension;
-      this.setState({
-        name: name,
-        code: code,
-        tag: tag
-      });
+  componentDidMount() {
+    this.setTagAttrs(this.props);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.showModal != this.state.showModal && !prevState.showModal) {
+      this.setTagAttrs(this.props);
     }
   }
 
@@ -43,7 +43,7 @@ class UpdateDimension extends AddDimension {
     params = {
       name: this.state.name,
       code: this.state.code,
-      tag: this.state.tag,
+      dimension_tag: this.state.dimension_tag,
       id
     };
     this.setState({isProcessing: true});
@@ -51,12 +51,13 @@ class UpdateDimension extends AddDimension {
       this.props.onSuccess(data);
       this.setState({isProcessing: false});
       this._closeModal();
-    });
+    }).fail(this._onSubmitError);
   }
 
   _closeModal() {
     this.setState({
-      showModal: false
+      showModal: false,
+      errors: {}
     });
   }
 }

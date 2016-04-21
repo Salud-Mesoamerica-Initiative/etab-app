@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
-import json
 
 from braces import views as braces
-from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView, View, CreateView, UpdateView
-from django.forms import modelform_factory
+from django.forms.models import modelform_factory
 
 from core.models import Location
 from utils.views import AJAXRequiredMixin
@@ -19,15 +17,25 @@ def dimension_tag_to_json(dimension_tag):
     }
 
 
-def dimension_to_json(dimension):
-    path = dimension.get_path()
-    return {
+def dimension_to_json(dimension, add_parent_ids=True):
+    ctx = {
         '_id': dimension.id,
         'name': dimension.name,
         'code': dimension.code,
-        'tag': dimension.dimension_tag,
-        '_parentIds': path,
+        'dimension_tag': '',
+        'dimension_tag_name': ''
     }
+
+    if add_parent_ids:
+        path = dimension.get_path()
+        ctx.update({'_parentIds': path})
+
+    if dimension.dimension_tag:
+        ctx.update({
+            'dimension_tag': dimension.dimension_tag.id,
+            'dimension_tag_name': dimension.dimension_tag.name
+        })
+    return ctx
 
 
 def location_to_json(location):
@@ -46,15 +54,14 @@ class IndexView(braces.LoginRequiredMixin, TemplateView):
         qs = Dimension.objects.filter(parent__isnull=True)
         tree = []
         for dimension in qs:
-            tree.append({
+            serialize_dimension = {
                 'collapsed': True,
                 'module': dimension.name,
-                '_id': dimension.id,
-                'code': dimension.code,
-                'tag': dimension.dimension_tag,
                 'children': [],
                 '_has_children': Dimension.objects.filter(parent=dimension).exists()
-            })
+            }
+            serialize_dimension.update(dimension_to_json(dimension, False))
+            tree.append(serialize_dimension)
 
         tags = []
         for tag in DimensionTag.objects.all().order_by('name'):
@@ -71,18 +78,12 @@ class IndexView(braces.LoginRequiredMixin, TemplateView):
             'tags': tags
         }
         return ctx
-        
+
 
 class CreateUpdateMixin(object):
     http_method_names = ['post']
     form_class = modelform_factory(Dimension, fields=('name', 'parent', 'code', 'dimension_tag'))
-    
-    def get_form_kwargs(self):
-        kwargs = super(CreateAJAXView, self).get_form_kwargs()
-        kwargs['data'].update({'parent': self.data.get('parent_id')]})
-        kwargs['data'].update({'dimension_tag': self.data.get('tag')})
-        return kwargs
-    
+
     def form_valid(self, form):
         obj = form.save()
         cx = {
@@ -90,18 +91,18 @@ class CreateUpdateMixin(object):
         }
         cx['_parentIds'] = cx['items'][0]['_parentIds']
         return self.render_json_response(cx)
-        
+
     def form_invalid(self, form):
         cx = {
             'errors': form.errors
         }
-        return self.render_json_response(cx)
+        return self.render_json_response(cx, status=400)
 
 
 class CreateAJAXView(braces.LoginRequiredMixin,
                      braces.JSONResponseMixin,
                      AJAXRequiredMixin,
-                     CreateUpdateMixin.
+                     CreateUpdateMixin,
                      CreateView):
     pass
 
@@ -111,7 +112,6 @@ class UpdateAJAXView(braces.LoginRequiredMixin,
                      AJAXRequiredMixin,
                      CreateUpdateMixin,
                      UpdateView):
-
     def get_object(self):
         obj = get_object_or_404(Dimension, pk=self.data['id'])
         return obj
@@ -159,14 +159,14 @@ class ChildrenListAJAXView(braces.LoginRequiredMixin,
         for dimension in dimension_qs:
             if not path:
                 path = dimension.get_path()
-            tree.append({
+
+            serialize_dimension = {
                 'collapsed': True,
-                'name': dimension.name,
-                'code': dimension.code,
-                'tag': dimension.dimension_tag,
-                '_id': dimension.id,
                 '_has_children': Dimension.objects.filter(parent=dimension).exists()
-            })
+            }
+            serialize_dimension.update(dimension_to_json(dimension, False))
+            tree.append(serialize_dimension)
+
         ctx['items'] = tree
         ctx['_parentIds'] = path
 
@@ -222,17 +222,17 @@ class MoveLocationAJAXView(braces.LoginRequiredMixin,
 
 class CreateUpdateDimensionTagMixin(object):
     http_method_names = ['post']
-    form_class = modelform_factory(DimensionTag, fields=('name', ))
-    
+    form_class = modelform_factory(DimensionTag, fields=('name',))
+
     def form_valid(self, form):
         obj = form.save()
         return self.render_json_response(dimension_tag_to_json(obj))
-        
+
     def form_invalid(self, form):
         cx = {
             'errors': form.errors
         }
-        return self.render_json_response(cx)
+        return self.render_json_response(cx, status=400)
 
 
 class CreateDimensionTagAJAXView(braces.LoginRequiredMixin,
@@ -248,15 +248,15 @@ class UpdateDimensionTagAJAXView(braces.LoginRequiredMixin,
                                  AJAXRequiredMixin,
                                  CreateUpdateDimensionTagMixin,
                                  UpdateView):
-    def get_object(self, request, *args, **kwargs):
+    def get_object(self):
         obj = get_object_or_404(DimensionTag, pk=self.data['id'])
         return obj
 
 
 class DeleteDimensionTagAJAXView(braces.LoginRequiredMixin,
-                     braces.JSONResponseMixin,
-                     AJAXRequiredMixin,
-                     View):
+                                 braces.JSONResponseMixin,
+                                 AJAXRequiredMixin,
+                                 View):
     http_method_names = ['post']
 
     def post(self, request, *args, **kwargs):

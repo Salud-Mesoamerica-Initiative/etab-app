@@ -36,9 +36,9 @@ class UpdateTag extends AddDimension {
     this.setTagAttrs(this.props);
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (!this.state.showModal) {
-      this.setTagAttrs(nextProps);
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.showModal != this.state.showModal && !prevState.showModal) {
+      this.setTagAttrs(this.props);
     }
   }
 
@@ -57,6 +57,8 @@ class UpdateTag extends AddDimension {
         <div>
           <Input
             type="text"
+            bsStyle={this._validationState('name')}
+            help={this._helpText('name')}
             value={this.state.name}
             label="Name"
             ref="name"
@@ -80,12 +82,13 @@ class UpdateTag extends AddDimension {
       this.props.onSuccess(data);
       this._closeModal();
       this.setState({isProcessing: false});
-    });
+    }).fail(this._onSubmitError);
   }
 
   _closeModal() {
     this.setState({
-      showModal: false
+      showModal: false,
+      errors: {}
     });
   }
 

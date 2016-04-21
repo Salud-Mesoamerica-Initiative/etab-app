@@ -20,6 +20,8 @@ data.tree.children.forEach((item)=> {
   tree[item._id] = {
     id: item._id,
     name: item.module,
+    dimension_tag: item.dimension_tag,
+    code: item.code,
     module: item.module,
     isFetching: false,
     isCompleted: false

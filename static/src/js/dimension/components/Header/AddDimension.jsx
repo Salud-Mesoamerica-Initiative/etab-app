@@ -12,8 +12,9 @@ class AddDimension extends React.Component {
       showModal: false,
       name: '',
       code: '',
-      tag: '',
-      isProcessing: false
+      dimension_tag: '',
+      isProcessing: false,
+      errors: {}
 
     };
 
@@ -29,6 +30,7 @@ class AddDimension extends React.Component {
     this.onCloseModal = this.onCloseModal.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.onTextChange = this.onTextChange.bind(this);
+    this._onSubmitError = this._onSubmitError.bind(this);
   }
 
   render() {
@@ -85,22 +87,28 @@ class AddDimension extends React.Component {
         <div>
           <Input
             type="text"
+            bsStyle={this._validationState('name')}
+            help={this._helpText('name')}
             value={this.state.name}
             label="Name"
             ref="name"
             onChange={(e) => this.onTextChange(e, 'name')}/>
           <Input
             type="text"
+            bsStyle={this._validationState('code')}
+            help={this._helpText('code')}
             value={this.state.code}
             label="Code"
             ref="code"
             onChange={(e) => this.onTextChange(e, 'code')}/>
           <Input
             type="select"
-            value={this.state.tag}
+            bsStyle={this._validationState('dimension_tag')}
+            help={this._helpText('dimension_tag')}
+            value={this.state.dimension_tag}
             label="Tag"
-            ref="tag"
-            onChange={(e) => this.onTextChange(e, 'tag')}>
+            ref="dimension_tag"
+            onChange={(e) => this.onTextChange(e, 'dimension_tag')}>
             {tags}
           </Input>
 
@@ -146,15 +154,16 @@ class AddDimension extends React.Component {
     params = {
       name: this.state.name,
       code: this.state.code,
-      tag: this.state.tag,
-      parent_id: parentId
+      dimension_tag: this.state.dimension_tag,
+      parent_id: parentId,
+      parent: parentId
     };
     this.setState({isProcessing: true});
     $.post(url, params, (data)=> {
       this.props.onSuccess(data);
       this._closeModal();
       this.setState({isProcessing: false});
-    });
+    }).fail(this._onSubmitError);
   }
 
   onTextChange(e, key) {
@@ -174,13 +183,40 @@ class AddDimension extends React.Component {
     }
   }
 
+  _onSubmitError(responseError) {
+    if (responseError.status == 400) {
+      let errors = responseError.responseJSON.errors;
+      this.setState({
+        isProcessing: false,
+        errors
+      })
+    }
+  }
+
   _closeModal() {
     this.setState({
       showModal: false,
       name: '',
       code: '',
-      tag: ''
+      dimension_tag: '',
+      errors: {}
     });
+  }
+
+  _validationState(field) {
+    const errors = this.state.errors || {};
+    if (errors[field]) {
+      return 'error';
+    }
+    return null;
+  }
+
+  _helpText(field) {
+    const errors = this.state.errors || {};
+    if (errors[field]) {
+      return errors[field];
+    }
+    return null;
   }
 }
 
