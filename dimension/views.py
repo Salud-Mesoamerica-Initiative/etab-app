@@ -112,6 +112,8 @@ class UpdateAJAXView(braces.LoginRequiredMixin,
                      AJAXRequiredMixin,
                      CreateUpdateMixin,
                      UpdateView):
+    form_class = modelform_factory(Dimension, fields=('name', 'code', 'dimension_tag'))
+
     def get_object(self):
         obj = get_object_or_404(Dimension, pk=self.data['id'])
         return obj
