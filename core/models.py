@@ -126,7 +126,7 @@ class Location(Auditable, Noun):
     title = models.TextField()
     position = GeopositionField()
     dimension = models.ForeignKey(Dimension, null=True, verbose_name='Dimension',
-                                  related_name='locations', on_delete=models.SET_NULL)
+                                  related_name='locations', on_delete=models)
     indicators = models.ManyToManyField('Indicator', null=True, blank=True)
     members = models.ManyToManyField(User, null=True, blank=True)
     images = models.ManyToManyField(Image, null=True, blank=True)

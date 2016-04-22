@@ -237,11 +237,11 @@ class UserListView(SiteRootView, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(UserListView, self).get_context_data(**kwargs)
-        users = User.objects.filter(is_active=True)
+        users = User.objects.filter(is_active=True).order_by('first_name', 'last_name')
         context['users'] = users
         locationusers = []
         for u in users:
-            u.locations_volatile = u.location_set.all()
+            u.locations_volatile = u.location_set.all().order_by('title')
             locationusers.append(u)
         context['locationusers'] = locationusers
         return context

@@ -17,7 +17,14 @@ urlpatterns = patterns(
     (r'', include('core.urls')),
     url(r'^forms/', include(forms_builder.forms.urls)),
     url(r'^forms/', include(forms_builder.forms.urls)),
-    url(r'^dimension/', include(dimension.urls,namespace="dimension")),
+    url(r'^dimension/', include(dimension.urls, namespace="dimension")),
     url(r'^jsreverse/$', 'django_js_reverse.views.urls_js', name='js_reverse'),
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
+if settings.DEBUG:
+    import debug_toolbar
+
+    urlpatterns += patterns(
+        '',
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    )

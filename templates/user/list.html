@@ -2,29 +2,50 @@
 {% block title %}orchid{% endblock %}
 {% block jumbotron %}<h1>All Users</h1>{% endblock %}
 {% block showcase %}
-{% for u in locationusers %}
-<div class="">
-    <div class="panel panel-default">
-      
+  {% for u in locationusers %}
+    <div class="">
+      <div class="panel-group" id="accordion{{ u.id }}" role="tablist" aria-multiselectable="true">
+        <div class="panel panel-default">
+          <div class="panel-heading" role="tab">
+            <div class="row">
+              <div class="col-md-6">
+                <h4 class="panel-title" style="padding-top: 8px">
+                  <a role="button" data-toggle="collapse" data-parent="#accordion{{ u.id }}"
+                     href="#collapse{{ u.id }}" aria-expanded="false"
+                     aria-controls="collapse{{ u.id }}">
+                    <strong>{{ u.get_full_name }}</strong>
+                  </a>
 
-<div class="pull-right btn-group" role="group" aria-label="Default button group">
-            <a href="{% url 'user_detail' u.id %}" type="button" class="btn btn-default" >View</a>
-            <a href="{% url 'user_update' u.id %}" type="button" class="btn btn-default" >Update</a>
-            <a href="{% url 'user_deactivate' u.id %}" type="button" class="btn btn-default" >Deactivate</a>
-            <a href="{% url 'user_password_reset' u.id %}" type="button" class="btn btn-default">Reset Password</a>
+                </h4>
+              </div>
+              <div class="col-md-6">
+                <div class="pull-right btn-group" role="group" aria-label="Default button group">
+                  <a href="{% url 'user_detail' u.id %}" type="button"
+                     class="btn btn-default">View</a>
+                  <a href="{% url 'user_update' u.id %}" type="button"
+                     class="btn btn-default">Update</a>
+                  <a href="{% url 'user_deactivate' u.id %}" type="button" class="btn btn-default">Deactivate</a>
+                  <a href="{% url 'user_password_reset' u.id %}" type="button"
+                     class="btn btn-default">Reset
+                    Password</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="collapse{{ u.id }}" class="panel-collapse collapse" role="tabpanel">
+            <ul class="list-group">
+              {% for location in u.locations_volatile %}
+                <a class="list-group-item"
+                   href="{% url 'location_detail' location.id %}">{{ location.title }}</a>
+                {% empty %}
+                <a class="list-group-item"
+                   href="#">No locations assigned</a>
+              {% endfor %}
+            </ul>
+          </div>
         </div>
-        <div class="panel-heading"><h2>{{ u.get_full_name }} </h2>
       </div>
-      <div class="panel-body">
-<div>
-        {% for location in u.locations_volatile %}<a href="{% url 'location_detail' location.id %}">{{ location.title }}</a>{% if not forloop.last %},{% endif %}{% endfor %}
     </div>
-    </div>
-</div>
-
-
-
-</div>
-{% endfor %}
+  {% endfor %}
 
 {% endblock %}

@@ -3,8 +3,8 @@ from django import forms
 from django.contrib.auth.models import User
 
 import core.models as cm
+from core.fields import LocationModelMultipleChoiceField
 from dimension.models import Dimension
-
 
 # do weird stuff to mAake user names nou usernames show up
 from utils.utils import retrieve_leaf_dimensions
@@ -146,6 +146,10 @@ class LoginForm(ModelBootstrapForm):
                            "Note that both fields may be case-sensitive."),
         'inactive': _("This account is inactive."),
     }
+
+    def __init__(self, *args, **kwargs):
+        super(LoginForm, self).__init__(*args, **kwargs)
+        self.fields['email'].required = True
 
     def clean(self):
         cleaned_data = super(LoginForm, self).clean()
@@ -324,8 +328,9 @@ class SavedFilterForm(BootstrapForm):
 
 def get_user_form_class(user):
     class UserForm(ModelBootstrapForm):
-        locations = forms.ModelMultipleChoiceField(queryset=cm.Location.objects.all(),
-                                                   required=False)
+        locations = LocationModelMultipleChoiceField(
+            queryset=cm.Location.objects.all(),
+            required=False)
 
         def __init__(self, *args, **kwargs):
             initial = kwargs.get('initial', {})
