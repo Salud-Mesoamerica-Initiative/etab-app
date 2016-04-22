@@ -82,7 +82,7 @@ class RegistrationForm(ModelBootstrapForm):
     last_name = forms.CharField(max_length=100)
     password1 = forms.CharField(widget=forms.PasswordInput)
     password2 = forms.CharField(widget=forms.PasswordInput)
-    locations = forms.ModelMultipleChoiceField(queryset=cm.Location.objects.all(), required=False)
+    locations = LocationModelMultipleChoiceField(queryset=cm.Location.objects.all(), required=False)
 
     # rest of the fields
 
@@ -94,8 +94,8 @@ class RegistrationForm(ModelBootstrapForm):
                 ["There's already a user with that email address."])
             del cleaned_data['email']
 
-        password1 = cleaned_data.get("password1").lower()
-        password2 = cleaned_data.get("password2").lower()
+        password1 = cleaned_data.get("password1", '').lower()
+        password2 = cleaned_data.get("password2", '').lower()
 
         if password1 != password2:
             self._errors['password2'] = self.error_class(["Didn't match first password."])
@@ -120,8 +120,8 @@ class PasswordResetForm(BootstrapForm):
     def clean(self):
         cleaned_data = super(PasswordResetForm, self).clean()
 
-        password1 = cleaned_data.get("password1").lower()
-        password2 = cleaned_data.get("password2").lower()
+        password1 = cleaned_data.get("password1", '').lower()
+        password2 = cleaned_data.get("password2", '').lower()
 
         if password1 != password2:
             self._errors['password2'] = self.error_class(["Didn't match first password."])

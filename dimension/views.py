@@ -195,7 +195,7 @@ class ChildrenLocationListAJAXView(braces.LoginRequiredMixin,
             filters['dimension'] = dimension_id
         else:
             filters['dimensionpath__dimension'] = dimension_id
-        locations_qs = Location.objects.select_related('dimension') \
+        locations_qs = request.user.location_set.select_related('dimension') \
             .filter(**filters) \
             .order_by('title')
 
