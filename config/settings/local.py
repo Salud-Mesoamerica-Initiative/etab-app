@@ -7,7 +7,7 @@ TEMPLATE_DEBUG = DEBUG
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',
+        'NAME': 'orchid2',
         'USER': 'postgres',
         'PASSWORD': '',
         'HOST': '192.100.100.1',
@@ -17,6 +17,7 @@ DATABASES = {
 
 INSTALLED_APPS += (
     'debug_toolbar',
+    'django_extensions',
 )
 
 MIDDLEWARE_CLASSES += (

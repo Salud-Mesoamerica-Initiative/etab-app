@@ -22,8 +22,11 @@ import datetime, time
 from dateutil.relativedelta import relativedelta
 from django.utils import timezone
 
+from utils.utils import retrieve_leaf_dimensions
 
 # do weird stuff to mAake user names nou usernames show up
+
+
 def user_new_unicode(self):
     return self.get_full_name()
 
@@ -1175,7 +1178,7 @@ class LocationListVisualizeView(SiteRootView, TemplateView):
             out_kwargs = {'content_type': 'application/json'}
             return HttpResponse(data, **out_kwargs)
 
-        dimension_qs = cm.Dimension.objects.all().order_by('name')
+        dimension_qs = retrieve_leaf_dimensions().order_by('name')
         kwargs['dimensions'] = dimension_qs
 
         return super(LocationListVisualizeView, self).get(request, *args, **kwargs)

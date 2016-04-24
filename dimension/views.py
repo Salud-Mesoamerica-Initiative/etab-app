@@ -148,8 +148,14 @@ class ChildrenListAJAXView(braces.LoginRequiredMixin,
     def get(self, request, *args, **kwargs):
         parent_id = self.kwargs['dimension_id']
         dimension_qs = Dimension.objects.filter(parent=parent_id).order_by('name')
-        locations_qs = Location.objects.select_related('dimension') \
-            .filter(dimensionpath__dimension=parent_id, members=request.user) \
+
+        if self.request.user.is_staff:
+            locations = Location.objects
+        else:
+            locations = self.request.user.location_set
+
+        locations_qs = locations.select_related('dimension') \
+            .filter(dimensionpath__dimension=parent_id) \
             .order_by('title')
         ctx = {
             'locations': {
@@ -195,7 +201,13 @@ class ChildrenLocationListAJAXView(braces.LoginRequiredMixin,
             filters['dimension'] = dimension_id
         else:
             filters['dimensionpath__dimension'] = dimension_id
-        locations_qs = request.user.location_set.select_related('dimension') \
+
+        if self.request.user.is_staff:
+            locations = Location.objects
+        else:
+            locations = self.request.user.location_set
+
+        locations_qs = locations.select_related('dimension') \
             .filter(**filters) \
             .order_by('title')
 

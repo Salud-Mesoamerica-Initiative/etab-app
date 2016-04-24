@@ -9,6 +9,7 @@ var $content = $('#visualize-content');
 var $indicatorChart = $(".indicator-chart");
 var currentDimension = null;
 var noDimensions = "-1";
+var seriesData = {};
 
 orchid_vis = {
   locations: [],
@@ -30,7 +31,7 @@ orchid_vis = {
       console.log(e);
     }
     $el.hide();
-    orchid_vis.apply_chart($el, [], $el.data("indicator-title"), true);
+    // orchid_vis.apply_chart($el, [], $el.data("indicator-title"), true);
   },
   apply_chart: function (dom_object, series_data_blob, chart_title, legend_enabled) {
     return dom_object.highcharts({
@@ -92,11 +93,13 @@ orchid_vis = {
         for (var q in data.series) {
           var s = data.series[q];
           if (s.id != undefined) {
-            var loading_chart = orchid_vis.get_chart_by_id(s.id);
+            // var $el = $("#container-" + s.id);
+            // $el.show();
+            // var loading_chart = orchid_vis.get_chart_by_id(s.id);
             //adjust dates in data
-            newData = [];
+            var newData = [];
             for (var d in s.data) {
-              this_data = s.data[d];
+              var this_data = s.data[d];
               newData.push([
                 new Date(this_data[0]).getTime(),
                 parseInt(this_data[1]),
@@ -108,11 +111,22 @@ orchid_vis = {
             if (data.noun) {
               title = data.noun.title;
             }
-            loading_chart.addSeries({
+
+            if (!seriesData[s.id]) {
+              seriesData[s.id] = [];
+            }
+
+            seriesData[s.id].push({
               name: title,
               data: newData
             });
-            $("#container-" + s.id).show();
+
+            // loading_chart.addSeries({
+            //   name: title,
+            //   data: newData
+            // });
+            // var $chart = $el.highcharts();
+            // $chart.setSize($el.width(), $chart.chartHeight, doAnimation = true);
           }
         }
         var txt = String(orchid_vis.location_cursor + 1) + "/" +
@@ -120,6 +134,13 @@ orchid_vis = {
         $('#loaded_counter').html(txt);
         orchid_vis.load_next_location();
       });
+    } else {
+      for (var sid in seriesData) {
+        var $el = $("#container-" + sid);
+        $el.show();
+        orchid_vis.apply_chart($el, seriesData[sid], $el.data("indicator-title"), true);
+        // var loading_chart = orchid_vis.get_chart_by_id(s.id);
+      }
     }
 
   }
@@ -128,6 +149,7 @@ orchid_vis = {
 $('#dimensions').on('change', function (e) {
   var $this = $(this);
   var value = $this.val();
+  seriesData = {};
   if (value == noDimensions) {
     $content.hide();
   } else {
@@ -158,9 +180,9 @@ function drawLocationsByDimension(dimension) {
 // I do not what this does
 orchid_vis.apply_chart($container, [], "Percent Of Goals Met", true);
 var index = $container.data('highchartsChart');
-var mychart = Highcharts.charts[index];
-
-mychart.setTitle("hello!");
+// var mychart = Highcharts.charts[index];
+//
+// mychart.setTitle("hello!");
 
 $indicatorChart.each(function () {
   orchid_vis.apply_chart($(this), [], $(this).data("indicator-title"), true);

@@ -148,6 +148,12 @@ class Location(Auditable, Noun):
             DimensionPath.objects.create(location=self, dimension_id=dimension_id,
                                          level=(index + 1))
 
+    def save(self, *args, **kwargs):
+        super(Location, self).save(*args, **kwargs)
+        if self.dimension:
+            self.update_dimension_tags(self.dimension)
+
+
     def get_absolute_url(self):
         return reverse(viewname='location_detail', args=[self.id], current_app=APPNAME)
 
@@ -602,4 +608,4 @@ class DimensionPath(models.Model):
     level = models.PositiveIntegerField()
 
     def __unicode__(self):
-        return u'{}: {}::{}'.format(self.level, self.dimension.name, self.location.name)
+        return u'{}: {}::{}'.format(self.level, self.dimension.name, self.location.title)
