@@ -12,7 +12,7 @@ var APP_DIR = path.resolve(ROOT_SRC_DIR, 'js');
 
 process.env.BABEL_ENV = TARGET;
 
-var folder = 'dimension';
+var folder = 'location_list';
 
 var config = {
   entry: path.join(APP_DIR, folder),
@@ -85,5 +85,19 @@ if (TARGET === 'start' || !TARGET) {
 }
 
 if (TARGET === 'build') {
-  module.exports = merge(config, {});
+  var production = {
+    plugins: [
+      new webpack.DefinePlugin({
+        'process.env': {
+          'NODE_ENV': JSON.stringify('production')
+        }
+      }),
+      new webpack.optimize.UglifyJsPlugin({
+        compress: {
+          warnings: false
+        }
+      })
+    ]
+  };
+  module.exports = merge(config, production);
 }

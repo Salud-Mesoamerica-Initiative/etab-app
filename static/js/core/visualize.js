@@ -28,7 +28,7 @@ orchid_vis = {
     try {
       $el.highcharts().destroy();
     } catch (e) {
-      console.log(e);
+      // console.log(e);
     }
     $el.hide();
     // orchid_vis.apply_chart($el, [], $el.data("indicator-title"), true);
