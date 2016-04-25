@@ -77,7 +77,11 @@ orchid_vis = {
     });
 
   },
-  load_next_location: function () {
+  load_next_location: function (dimension) {
+    if (dimension != currentDimension) {
+      return;
+    }
+
     if (orchid_vis.location_cursor == null) {
       orchid_vis.location_cursor = 0;
     }
@@ -89,7 +93,7 @@ orchid_vis = {
       var next_location_id = orchid_vis.locations[orchid_vis.location_cursor].id;
       //load the location's json
       var url = "location/" + String(next_location_id) + "/visualize";
-      $.getJSON(url, {dimension: currentDimension}, function (data) {
+      $.getJSON(url, {dimension: dimension}, function (data) {
         for (var q in data.series) {
           var s = data.series[q];
           if (s.id != undefined) {
@@ -132,7 +136,7 @@ orchid_vis = {
         var txt = String(orchid_vis.location_cursor + 1) + "/" +
           String(orchid_vis.locations.length) + " Loaded";
         $('#loaded_counter').html(txt);
-        orchid_vis.load_next_location();
+        orchid_vis.load_next_location(dimension);
       });
     } else {
       for (var sid in seriesData) {
@@ -171,7 +175,7 @@ function drawLocationsByDimension(dimension) {
         orchid_vis.locations.push(val);
       });
       $('#loaded_counter').html("0/" + String(orchid_vis.locations.length) + " Loaded");
-      orchid_vis.load_next_location();
+      orchid_vis.load_next_location(dimension);
     }
   });
 }
