@@ -38,7 +38,10 @@
   <div id="visualize-content" style="display: none">
     {#  <div id="visualize-content">#}
     <h1 id="loaded_counter">0 / ??? Loaded</h1>
-    <div id="container-p" class="panel row panel-default indicator-chart" style="min-width: 310px; height: 600px;">
+    <div id="container-p"
+         data-indicator-title="Percent Of Goals Met"
+         class="panel row panel-default indicator-chart"
+         style="min-width: 310px; height: 600px;">
       <div hidden class="alert alert-danger" role="alert" id="error_message">
         <strong>Oh snap!</strong> There was a problem generating your graph.
       </div>

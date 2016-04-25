@@ -69,7 +69,7 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -178,8 +178,9 @@ MESSAGES_TEMPLATE = 'base/messages.html'
 
 ACTSTREAM_SETTINGS = {
     'MODELS': (
-    'core.indicator', 'forms.field', 'core.location', 'core.image', 'auth.user', 'auth.group',
-    'core.historicalproject', 'core.historicalpost', 'core.historicalmedia'),
+        'core.indicator', 'forms.field', 'core.location', 'core.image', 'auth.user', 'auth.group',
+        'core.historicalproject', 'core.historicalpost', 'core.historicalmedia'
+    ),
     'USE_JSONFIELD': True,
 }
 

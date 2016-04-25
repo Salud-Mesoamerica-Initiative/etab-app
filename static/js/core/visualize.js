@@ -4,7 +4,7 @@
 
 var months = ["January", "February", "March", "April", "May", "June", "July", "August",
   "September", "October", "November", "December"];
-var $container = $('#container-p');
+var $pContainer = $('#container-p');
 var $content = $('#visualize-content');
 var $indicatorChart = $(".indicator-chart");
 var currentDimension = null;
@@ -182,12 +182,13 @@ function drawLocationsByDimension(dimension) {
 
 
 // I do not what this does
-orchid_vis.apply_chart($container, [], "Percent Of Goals Met", true);
-var index = $container.data('highchartsChart');
+orchid_vis.apply_chart($pContainer, [], $pContainer.data("indicator-title"), true);
+var index = $pContainer.data('highchartsChart');
 // var mychart = Highcharts.charts[index];
 //
 // mychart.setTitle("hello!");
 
 $indicatorChart.each(function () {
-  orchid_vis.apply_chart($(this), [], $(this).data("indicator-title"), true);
+  var $this = $(this);
+  orchid_vis.apply_chart($this, [], $this.data("indicator-title"), true);
 });
