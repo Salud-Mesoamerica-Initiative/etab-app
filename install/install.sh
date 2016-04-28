@@ -23,8 +23,8 @@ if [ -z "$VIRTUAL_ENV" ]; then
     echo "source ${VIRTUAL_PATH}/bin/activate"
     exit 1;
 else
-    pip install -r ../requirements/production.txt
     cd ..
+    pip install -r requirements/production.txt
     python manage.py migrate
 #    echo starting the server...
 #    python manage.py runserver 0.0.0.0:80
